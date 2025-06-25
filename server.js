@@ -6,7 +6,6 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser")
 const { sequelize } = require("./utils/database");
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 const cors = require("./middleware/cors");
 const error = require("./middleware/errors");
 const swaggerUi = require('swagger-ui-express');
