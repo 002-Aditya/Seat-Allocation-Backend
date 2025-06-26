@@ -1,8 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const logger = require('./logger');
-const creatingSchema = require('../database-details/schema-creation');
-const authSchema = require('../database-details/create-tables/auth');
-const configSchema = require('../database-details/create-tables/config');
+const initializeDatabase = require('../database-details/initialize-database');
 
 const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, process.env.DB_PASSWORD,
     {
@@ -24,9 +22,7 @@ db.sequelize = sequelize;
 
 // Initialize models after sync
 db.sequelize.sync({ force: true }).then(async () => {
-    await creatingSchema(sequelize, DataTypes);
-    db.auth = await authSchema.initialize(sequelize, DataTypes);
-    db.config = await configSchema.initialize(sequelize, DataTypes);
+    await initializeDatabase(sequelize, DataTypes, db);
     logger.info('database -> Yes resync done');
 }).catch((err) => {
     logger.error('database -> error', err);
