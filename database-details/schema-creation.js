@@ -14,7 +14,7 @@ const creatingSchema = async (sequelize, DataTypes) => {
             if (result.status === 'fulfilled') {
                 logger.info(`database -> ${schema} schema created`);
             } else {
-                logger.info(`database -> ${schema} schema error`, result.reason);
+                logger.error(`database -> ${schema} schema error`, result.reason);
             }
         });
     } catch (e) {
