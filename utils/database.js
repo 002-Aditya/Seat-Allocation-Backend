@@ -1,6 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const logger = require('./logger');
-const { createSchema } = require("./schema");
+const creatingSchema = require('../database-details/schema-creation');
 
 const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, process.env.DB_PASSWORD,
     {
@@ -20,18 +20,10 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-// Creating schema dynamically
-createSchema(sequelize, "auth")
-    .then(() => {
-        logger.info("database -> auth schema created");
-    })
-    .catch((err) => {
-        logger.info("database -> auth schema error", err);
-    });
-
 // Create tables and its mappings in a separate file
 
 db.sequelize.sync({ force: false }).then(async () => {
+    await creatingSchema(sequelize, DataTypes);
     logger.info("database -> Yes resync done");
 }).catch((err) => {
     logger.info("database -> error", err);
