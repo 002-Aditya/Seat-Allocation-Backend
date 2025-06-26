@@ -7,7 +7,6 @@ const cookieParser = require("cookie-parser")
 const { sequelize } = require("./utils/db-init");
 const helmet = require('helmet');
 const cors = require("./middleware/cors");
-const error = require("./middleware/errors");
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./utils/swaggerDef');
 const logger = require('./utils/logger');
