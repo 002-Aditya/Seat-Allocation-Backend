@@ -1,13 +1,27 @@
 const db = require("../../utils/db-init");
 const logger = require("../../utils/logger");
 
-// Accessing the model from within the schema
-const RowsArrangement = db.config.RowsArrangement;
-
 // Creating a service object for encapsulating CRUD operations
 const RowsArrangementService = {
+
+    // Helper function to fetch RowsArrangementModel only if it exists after getting the whole db initialized
+    async getRowsArrangementModel() {
+        try {
+            const db = await require("../../utils/db-init");
+            if (!db.config || !db.config.RowsArrangement) {
+                logger.error("Rows arrangement model not found");
+                return { success: false, message: "Rows arrangement model not found" };
+            }
+            return db.config.RowsArrangement;
+        } catch (e) {
+            logger.error("Error occurred while fetching rows arrangement model", e);
+            return { success: false, message: e.message };
+        }
+    },
+
     async createRowsArrangement(rowsArrangementData) {
         try {
+            const RowsArrangement = await this.getRowsArrangementModel();
             const rowsArrangement = await RowsArrangement.create(rowsArrangementData);
             logger.info("Rows arrangement created successfully" + rowsArrangement.rowsId);
             return { success: true, message: "Rows arrangement created successfully" };
@@ -19,6 +33,7 @@ const RowsArrangementService = {
 
     async findRowsArrangementById(rowsArrangementId) {
         try {
+            const RowsArrangement = await this.getRowsArrangementModel();
             const rowsArrangement = await RowsArrangement.findByPk(rowsArrangementId);
             if (!rowsArrangement) {
                 logger.warn(`Rows arrangement not found for id ${rowsArrangementId}`);
@@ -34,6 +49,7 @@ const RowsArrangementService = {
 
     async findAllRowsArrangement() {
         try {
+            const RowsArrangement = await this.getRowsArrangementModel();
             const rowsArrangement = await RowsArrangement.findAll();
             return { success: true, message: "Rows arrangement found", rowsArrangement };
         } catch (e) {
