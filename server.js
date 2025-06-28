@@ -10,15 +10,20 @@ const cors = require("./middleware/cors");
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./utils/swaggerDef');
 const logger = require('./utils/logger');
+const routes = require('./routes/index-routes');
+const { registerRoutes } = require("./routes/index-routes");
 
 app.use(bodyParser.json());
-app.use(cookieParser())
+app.use(cookieParser());
 app.use(cors);
 app.use(helmet());
 
 app.set('trust proxy', 1);
 
 app.use(express.json());  // it is used to parse the body of POST requests
+
+// Registering all the routes from within the single file
+registerRoutes(app);
 
 app.get('/', (req, res) => {
     res.send('Hello, Seat Allocation Service this side!');
