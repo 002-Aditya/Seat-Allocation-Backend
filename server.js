@@ -8,7 +8,6 @@ const { sequelize } = require("./utils/db-init");
 const helmet = require('helmet');
 const cors = require("./middleware/cors");
 const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./utils/swaggerDef');
 const logger = require('./utils/logger');
 const routes = require('./routes/index-routes');
 const { registerRoutes } = require("./routes/index-routes");
