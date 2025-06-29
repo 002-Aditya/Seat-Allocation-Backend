@@ -1,5 +1,6 @@
 const db = require("../../utils/db-init");
 const logger = require("../../utils/logger");
+const { filterData } = require("../../utils/filter-data");
 
 // Creating a service object for encapsulating CRUD operations
 const RowsArrangementService = {
@@ -20,12 +21,19 @@ const RowsArrangementService = {
     },
 
     async createRowsArrangement(rowsArrangementData) {
+        const t = await db.sequelize.transaction();
         try {
             const RowsArrangement = await this.getRowsArrangementModel();
-            const rowsArrangement = await RowsArrangement.create(rowsArrangementData);
-            logger.info("Rows arrangement created successfully" + rowsArrangement.rowsId);
-            return { success: true, message: "Rows arrangement created successfully" };
+            const createdInstance = await RowsArrangement.create(rowsArrangementData, { transaction: t });
+            const plainData = createdInstance.get({ plain: true });
+
+            logger.info("Rows arrangement created successfully with rows arrangement id : " + plainData.rowsId);
+
+            const filtered = filterData([plainData]);
+            await t.commit();
+            return { success: true, message: filtered[0] };
         } catch (e) {
+            await t.rollback();
             logger.error("Error occurred while creating rows arrangement", e);
             return { success: false, message: e.message };
         }
@@ -50,7 +58,9 @@ const RowsArrangementService = {
     async findAllRowsArrangement() {
         try {
             const RowsArrangement = await this.getRowsArrangementModel();
-            const rowsArrangement = await RowsArrangement.findAll();
+            const rowsArrangement = await RowsArrangement.findAll({
+                attributes: ['rowsId', 'noOfSeats', 'department', 'employeeCount']
+            });
             return { success: true, message: "Rows arrangement found", rowsArrangement };
         } catch (e) {
             logger.error("Error occurred while finding all rows arrangement", e);

@@ -1,6 +1,7 @@
 // Using the row arrangement service layer for applying CRUD operations on data in the row table
 const RowsArrangementService = require('../services/config/rows-arrangement');
 const logger = require('../utils/logger');
+const { json } = require("express");
 
 async function createRows(req, res) {
     try {
@@ -10,7 +11,10 @@ async function createRows(req, res) {
             return res.status(400).send({ success: false, message: "Rows arrangement data is not provided" });
         }
         const rowsArrangement = await RowsArrangementService.createRowsArrangement(rowsArrangementData);
-        return res.status(201).send(rowsArrangement);
+        if (!rowsArrangement.success) {
+            return res.status(500).send(json(rowsArrangement.message));
+        }
+        return res.status(201).send(rowsArrangement.message);
     } catch (e) {
         logger.error("Error occurred while creating rows arrangement", e);
         return res.status(500).send({ success: false, message: e.message });
