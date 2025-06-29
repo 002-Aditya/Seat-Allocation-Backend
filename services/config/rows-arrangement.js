@@ -24,10 +24,11 @@ const RowsArrangementService = {
         const t = await db.sequelize.transaction();
         try {
             const RowsArrangement = await this.getRowsArrangementModel();
-            const createdInstance = await RowsArrangement.create(rowsArrangementData, { transaction: t });
+            const filterInput = await filterData([rowsArrangementData]);
+            const createdInstance = await RowsArrangement.create(filterInput[0], { transaction: t });
             const plainData = createdInstance.get({ plain: true });
+            const filtered = await filterData([plainData]);
             logger.info("Rows arrangement created successfully with rows arrangement id : " + plainData.rowsId);
-            const filtered = filterData([plainData]);
             await t.commit();
             return { success: true, message: filtered[0] };
         } catch (e) {
@@ -65,6 +66,51 @@ const RowsArrangementService = {
         } catch (e) {
             logger.error("Error occurred while finding all rows arrangement", e);
             return { success: false, message: e.message };
+        }
+    },
+
+    async updateRowsArrangement(rowsArrangementId, rowsArrangementData) {
+        const t = await db.sequelize.transaction();
+        try {
+            const RowsArrangement = await this.getRowsArrangementModel();
+
+            // Check if the record exists
+            const ifRowsArrangementExists = await this.findRowsArrangementById(rowsArrangementId);
+            if (!ifRowsArrangementExists.success) {
+                logger.warn(`Rows arrangement not found for id ${rowsArrangementId}`);
+                await t.rollback();
+                return ifRowsArrangementExists;
+            }
+
+            // Modifying the input as per our needs
+            const filterInput = await filterData([rowsArrangementData]);
+            filterInput.modifiedOn = new Date();
+            filterInput.modifiedBy = "SYSTEM";
+
+            // Updating the given record
+            const [updatedCount, updatedRows] = await RowsArrangement.update(filterInput, {
+                where: { rowsId: rowsArrangementId },
+                transaction: t,
+                returning: true
+            });
+
+            // Check if any row was updated
+            if (updatedRows.length === 0) {
+                await t.rollback();
+                return { success: false, message: "No rows were updated." };
+            }
+
+            // Fetching the instance which was updated instead of the whole result
+            const updatedRowInstance = updatedRows[0];
+            const plainData = updatedRowInstance.get({ plain: true });
+            const filtered = await filterData([plainData]);
+            logger.info("Rows arrangement updated successfully with rows arrangement id : " + plainData.rowsId);
+            await t.commit();
+            return { success: true, message: filtered[0] };
+        } catch (e) {
+            await t.rollback();
+            logger.error("Error occurred while updating rows arrangement", e);
+            return {success: false, message: e.message};
         }
     }
 };

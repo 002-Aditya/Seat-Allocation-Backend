@@ -16,7 +16,7 @@ const fetchData = (req, res) => {
         return controller(req, res);
     } else {
         logger.error("Invalid request");
-        res.status(404).send({ success: false, message: "Invalid request" });
+        return res.status(404).send({ success: false, message: "Invalid request" });
     }
 };
 
