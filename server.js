@@ -25,6 +25,7 @@ app.use(express.json());  // it is used to parse the body of POST requests
 registerRoutes(app);
 
 app.get('/', (req, res) => {
+    logger.info("Service is expected to run");
     res.send('Hello, Seat Allocation Service this side!');
 });
 const server = app.listen(port);

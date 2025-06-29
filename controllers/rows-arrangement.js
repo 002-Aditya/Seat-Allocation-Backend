@@ -1,4 +1,4 @@
-// Using the rows arrangement service layer for applying CRUD operations on data in the row table
+// Using the row arrangement service layer for applying CRUD operations on data in the row table
 const RowsArrangementService = require('../services/config/rows-arrangement');
 const logger = require('../utils/logger');
 
@@ -15,8 +15,19 @@ async function createRows(req, res) {
         logger.error("Error occurred while creating rows arrangement", e);
         return res.status(500).send({ success: false, message: e.message });
     }
-};
+}
+
+async function getAllRows(req, res) {
+    try {
+        const rowsArrangement = await RowsArrangementService.findAllRowsArrangement();
+        return res.status(200).send(rowsArrangement.rowsArrangement);
+    } catch (e) {
+        logger.error("Error occurred while fetching all rows arrangement", e);
+        return res.status(500).send({ success: false, message: e.message });
+    }
+}
 
 module.exports = {
-    createRows
+    createRows,
+    getAllRows,
 };
