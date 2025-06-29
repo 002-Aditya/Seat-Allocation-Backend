@@ -26,9 +26,7 @@ const RowsArrangementService = {
             const RowsArrangement = await this.getRowsArrangementModel();
             const createdInstance = await RowsArrangement.create(rowsArrangementData, { transaction: t });
             const plainData = createdInstance.get({ plain: true });
-
             logger.info("Rows arrangement created successfully with rows arrangement id : " + plainData.rowsId);
-
             const filtered = filterData([plainData]);
             await t.commit();
             return { success: true, message: filtered[0] };
@@ -42,12 +40,14 @@ const RowsArrangementService = {
     async findRowsArrangementById(rowsArrangementId) {
         try {
             const RowsArrangement = await this.getRowsArrangementModel();
-            const rowsArrangement = await RowsArrangement.findByPk(rowsArrangementId);
+            const rowsArrangement = await RowsArrangement.findByPk(rowsArrangementId, {
+                raw: true,
+                attributes: ['rowsId', 'noOfSeats', 'department', 'employeeCount']
+            });
             if (!rowsArrangement) {
                 logger.warn(`Rows arrangement not found for id ${rowsArrangementId}`);
-                return { success: false, message: "Rows arrangement not found" };
+                return { success: false, message: `Rows arrangement for the given id, ${rowsArrangementId} was not found` };
             }
-            logger.info(`Rows arrangement found for id ${rowsArrangementId}`);
             return { success: true, message: "Rows arrangement found", rowsArrangement };
         } catch (e) {
             logger.error(`Error occurred while finding rows arrangement by id ${rowsArrangementId}`, e);

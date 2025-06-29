@@ -31,7 +31,25 @@ async function getAllRows(req, res) {
     }
 }
 
+async function findRowsById(req, res) {
+    try {
+        const rowsId = req.query.rowsId;
+        if (!rowsId || rowsId.length === 0) {
+            return res.status(400).send({ success: false, message: "Rows id is not provided" });
+        }
+        const rowsArrangement = await RowsArrangementService.findRowsArrangementById(rowsId);
+        if (!rowsArrangement.success) {
+            return res.status(500).send(rowsArrangement);
+        }
+        return res.status(200).send(rowsArrangement.rowsArrangement);
+    } catch (e) {
+        logger.error(`Error occurred while fetching rows arrangement by id ${req.query.rowsId}`, e);
+        return res.status(500).send({ success: false, message: e.message });
+    }
+}
+
 module.exports = {
     createRows,
     getAllRows,
+    findRowsById,
 };

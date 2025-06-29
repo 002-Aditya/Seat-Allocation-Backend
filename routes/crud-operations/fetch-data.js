@@ -1,16 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const rowsArrangementController = require('../controllers/rows-arrangement');
-const logger = require('../utils/logger');
+const rowsArrangementController = require('../../controllers/rows-arrangement');
+const logger = require('../../utils/logger');
 
 // Controller to handle dynamic routing using a map
-const saveData = {
-    rowsArrangement: rowsArrangementController.createRows,
+const getData = {
+    rowsArrangement: rowsArrangementController.getAllRows,
 };
 
-const handleSave = (req, res) => {
+const fetchData = (req, res) => {
     const { type } = req.query;
-    const controller = saveData[type];
+    const controller = getData[type];
     if (controller) {
         logger.info(`Controller for ${type} is found and called`);
         return controller(req, res);
@@ -21,6 +21,6 @@ const handleSave = (req, res) => {
 };
 
 // Dynamic routes
-router.post('/', handleSave);
+router.get('/', fetchData);
 
 module.exports = router;
