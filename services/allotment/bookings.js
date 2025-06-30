@@ -63,19 +63,22 @@ const BookingService = {
         }
     },
 
-    async getBooking(bookingId) {
+    async getBookingOnRowId(rowId) {
         try {
             const Booking = await this.getBookingModel();
-            const booking = await Booking.findByPk(bookingId, {
+            const booking = await Booking.findAll({
+                where: {
+                    rowId: rowId,
+                },
                 raw: true,
                 attributes: ['bookingId', 'seatNo', 'rowId', 'bookedBy'],
             });
             if (!booking) {
-                return { success: false, message: `No booking model found for ${bookingId}` };
+                return { success: false, message: `Details not found for ${rowId}` };
             }
             return { success: true, message: booking };
         } catch (e) {
-            logger.error(`Error in fetching booking model for ${bookingId} `, e);
+            logger.error(`Error in fetching booking model for ${rowId} `, e);
         }
     }
 };

@@ -19,6 +19,24 @@ async function createNewBooking(req, res) {
     }
 }
 
+async function getAllBookings(req, res) {
+    try {
+        const rowId = req.query.rowId;
+        if (!rowId) {
+            return res.status(400).send({ success: false, message: "Row ID not found" });
+        }
+        const fetchBookings = await BookingsService.getBookingOnRowId(rowId);
+        if (!fetchBookings.success) {
+            return res.status(404).send({ success: false, message: fetchBookings.message });
+        }
+        return res.status(200).send(fetchBookings.message);
+    } catch (e) {
+        logger.error("Error occurred while getAllBookings : " ,e);
+        return res.status(500).json({ success: false, message: e.message });
+    }
+}
+
 module.exports = {
-    createNewBooking
+    createNewBooking,
+    getAllBookings,
 };
