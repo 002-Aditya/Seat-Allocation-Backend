@@ -15,10 +15,6 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        employeeCount: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
         createdOn: {
             type: DataTypes.DATE,
             defaultValue: Sequelize.NOW,
