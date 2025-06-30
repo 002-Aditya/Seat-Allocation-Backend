@@ -28,7 +28,7 @@ const RowsArrangementService = {
             const createdInstance = await RowsArrangement.create(filterInput[0], { transaction: t });
             const plainData = createdInstance.get({ plain: true });
             const filtered = await filterData([plainData]);
-            logger.info("Rows arrangement created successfully with rows arrangement id : " + plainData.rowsId);
+            logger.info("Rows arrangement created successfully with rows arrangement id : " + plainData.rowId);
             await t.commit();
             return { success: true, message: filtered[0] };
         } catch (e) {
@@ -43,7 +43,7 @@ const RowsArrangementService = {
             const RowsArrangement = await this.getRowsArrangementModel();
             const rowsArrangement = await RowsArrangement.findByPk(rowsArrangementId, {
                 raw: true,
-                attributes: ['rowsId', 'noOfSeats', 'department', 'employeeCount']
+                attributes: ['rowId', 'noOfSeats', 'department', 'employeeCount']
             });
             if (!rowsArrangement) {
                 logger.warn(`Rows arrangement not found for id ${rowsArrangementId}`);
@@ -60,7 +60,7 @@ const RowsArrangementService = {
         try {
             const RowsArrangement = await this.getRowsArrangementModel();
             const rowsArrangement = await RowsArrangement.findAll({
-                attributes: ['rowsId', 'noOfSeats', 'department', 'employeeCount']
+                attributes: ['rowId', 'noOfSeats', 'department', 'employeeCount']
             });
             return { success: true, message: "Rows arrangement found", rowsArrangement };
         } catch (e) {
@@ -89,7 +89,7 @@ const RowsArrangementService = {
 
             // Updating the given record
             const [updatedCount, updatedRows] = await RowsArrangement.update(filterInput, {
-                where: { rowsId: rowsArrangementId },
+                where: { rowId: rowsArrangementId },
                 transaction: t,
                 returning: true
             });
@@ -104,7 +104,7 @@ const RowsArrangementService = {
             const updatedRowInstance = updatedRows[0];
             const plainData = updatedRowInstance.get({ plain: true });
             const filtered = await filterData([plainData]);
-            logger.info("Rows arrangement updated successfully with rows arrangement id : " + plainData.rowsId);
+            logger.info("Rows arrangement updated successfully with rows arrangement id : " + plainData.rowId);
             await t.commit();
             return { success: true, message: filtered[0] };
         } catch (e) {
