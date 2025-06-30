@@ -43,7 +43,7 @@ const RowsArrangementService = {
             const RowsArrangement = await this.getRowsArrangementModel();
             const rowsArrangement = await RowsArrangement.findByPk(rowsArrangementId, {
                 raw: true,
-                attributes: ['rowId', 'noOfSeats', 'department', 'employeeCount']
+                attributes: ['rowId', 'noOfSeats', 'department']
             });
             if (!rowsArrangement) {
                 logger.warn(`Rows arrangement not found for id ${rowsArrangementId}`);
@@ -60,7 +60,7 @@ const RowsArrangementService = {
         try {
             const RowsArrangement = await this.getRowsArrangementModel();
             const rowsArrangement = await RowsArrangement.findAll({
-                attributes: ['rowId', 'noOfSeats', 'department', 'employeeCount']
+                attributes: ['rowId', 'noOfSeats', 'department']
             });
             return { success: true, message: "Rows arrangement found", rowsArrangement };
         } catch (e) {

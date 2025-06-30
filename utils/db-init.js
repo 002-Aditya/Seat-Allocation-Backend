@@ -46,7 +46,7 @@ db.sequelize = sequelize;
 // Initialize database and models
 createDatabaseIfNotExists()
     .then(() => {
-        return db.sequelize.sync({ force: true });
+        return db.sequelize.sync({ force: false });
     })
     .then(async () => {
         await initializeDatabase(sequelize, DataTypes, db);
