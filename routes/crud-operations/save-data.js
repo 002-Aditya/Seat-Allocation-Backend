@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const rowsArrangementController = require('../../controllers/rows-arrangement');
 const logger = require('../../utils/logger');
+const rowsArrangementController = require('../../controllers/rows-arrangement');
+const bookSeatController = require('../../controllers/bookings');
 
 // Controller to handle dynamic routing using a map
 const saveData = {
     rowsArrangement: rowsArrangementController.createRows,
+    bookSeat: bookSeatController.createNewBooking
 };
 
 const handleSave = (req, res) => {

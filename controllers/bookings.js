@@ -1,0 +1,24 @@
+const BookingsService = require("../services/allotment/bookings");
+const logger = require("../utils/logger");
+const { json } = require("express");
+
+async function createNewBooking(req, res) {
+    try {
+        const bookSeat = req.body;
+        if (!bookSeat || bookSeat.length === 0) {
+            return res.status(400).send({ success: false, message: "Body is empty" });
+        }
+        const bookedSeat = await BookingsService.createBooking(req.body);
+        if (!bookedSeat.success) {
+            return res.status(500).send(json(bookedSeat.message));
+        }
+        return res.status(201).send(bookedSeat.message);
+    } catch (e) {
+        logger.error("Error occurred while booking a seat : " ,e);
+        return res.status(400).json({ success: false, message: e.message });
+    }
+}
+
+module.exports = {
+    createNewBooking
+};
