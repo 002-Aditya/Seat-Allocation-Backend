@@ -3,6 +3,7 @@ const saveData = require('./crud-operations/save-data');
 const fetchData = require('./crud-operations/fetch-data');
 const getSingleRecord = require('./crud-operations/fetch-one');
 const updateRecord = require('./crud-operations/update-data');
+const { login } = require('../controllers/authentication');
 
 const registerRoutes = (app) => {
     const apiRouter = express.Router();
@@ -12,6 +13,7 @@ const registerRoutes = (app) => {
     apiRouter.use('/retrieve-data', fetchData);
     apiRouter.use('/single-record', getSingleRecord);
     apiRouter.use('/update-data', updateRecord);
+    apiRouter.post('/login', login);
 
     app.use('/seat-allocation', apiRouter);
 };
