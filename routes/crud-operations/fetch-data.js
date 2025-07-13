@@ -1,26 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const rowsArrangementController = require('../../controllers/rows-arrangement');
-const logger = require('../../utils/logger');
+const handleMethodRouting = require("../handle-method-routings");
 
 // Controller to handle dynamic routing using a map
-const getData = {
+const mappings = {
     rowsArrangement: rowsArrangementController.getAllRows,
 };
 
-const fetchData = (req, res) => {
-    const { type } = req.query;
-    const controller = getData[type];
-    if (controller) {
-        logger.info(`Controller for ${type} is found and called`);
-        return controller(req, res);
-    } else {
-        logger.error("Invalid request");
-        return res.status(404).send({ success: false, message: "Invalid request" });
-    }
-};
-
-// Dynamic routes
-router.get('/', fetchData);
+router.get('/', (req, res) => {
+    handleMethodRouting(req, res, mappings);
+});
 
 module.exports = router;

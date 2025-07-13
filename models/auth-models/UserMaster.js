@@ -7,6 +7,12 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true,
             autoIncrement: true
         },
+        empCode: {
+            type: DataTypes.STRING(50),
+            allowNull: false,
+            unique: true,
+            primaryKey: true
+        },
         firstName: {
             type: DataTypes.STRING(50),
             allowNull: false,

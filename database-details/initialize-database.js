@@ -11,8 +11,8 @@ const initializeDatabase = async (sequelize, DataTypes, db) => {
 
         // Create tables from here
         db.auth = await authSchema.initialize(sequelize, DataTypes);
-        db.config = await configSchema.initialize(sequelize, DataTypes);
-        db.allotment = await allotmentSchema.initialize(sequelize, DataTypes);
+        // db.config = await configSchema.initialize(sequelize, DataTypes);
+        // db.allotment = await allotmentSchema.initialize(sequelize, DataTypes);
 
         logger.info('Database schemas and models initialized successfully');
     } catch (err) {

@@ -3,6 +3,7 @@ const logger = require('../../utils/logger');
 const { filterData } = require('../../utils/filter-data');
 const getModel = require('../../utils/getModel');
 const bcrypt = require('bcrypt');
+const generateEmpCode = require("../../utils/get-e-code");
 
 const UserMasterService = {
 
@@ -20,9 +21,10 @@ const UserMasterService = {
                 return { success: false, message: "User model not found" };
             }
             const password = userDetails.password;
+
             // Encrypt password for generating JWT Token
-            const encryptedPassword = await bcrypt.hash(password, 10);
-            userDetails.password = encryptedPassword;
+            userDetails.password = await bcrypt.hash(password, 10);
+            userDetails.empCode = await generateEmpCode(userDetails.firstName);
             const createdUser = await UserMaster.create(userDetails, {
                 transaction: t,
                 returning: true,
@@ -38,6 +40,16 @@ const UserMasterService = {
         } catch (e) {
             logger.error(`Error while creating user : `, e);
             await t.rollback();
+            if (e.name === 'SequelizeValidationError' || e.name === 'SequelizeUniqueConstraintError') {
+                const errorMessages = e.errors.map(err => ({
+                    field: err.path,
+                    message: err.message
+                }));
+                return {
+                    success: false,
+                    message: errorMessages[0].message
+                };
+            }
             return { success: false, message: e.message };
         }
     },
