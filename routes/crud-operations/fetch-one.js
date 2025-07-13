@@ -1,23 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const rowsArrangementController = require('../../controllers/rows-arrangement');
-const logger = require('../../utils/logger');
+const handleMethodRouting = require("../handle-method-routings");
 
-const getOneResult = {
+const mappings = {
     rowsArrangement: rowsArrangementController.findRowsById,
 };
 
-const fetchOne = (req, res) => {
-    const { type } = req.query;
-    const controller = getOneResult[type];
-    if (controller) {
-        logger.info(`Controller for ${type} is found and called`);
-        return controller(req, res);
-    } else {
-        logger.error("Invalid request");
-    }
-};
-
-router.get('/', fetchOne);
+router.get('/', (req, res) => {
+    handleMethodRouting(req, res, mappings);
+});
 
 module.exports = router;

@@ -1,0 +1,41 @@
+const UserMasterService = require('../services/auth/user-master');
+const logger = require('../utils/logger');
+
+async function createUser(req, res) {
+    try {
+        const userDetails = req.body;
+        if (!userDetails || userDetails.length === 0) {
+            return res.status(400).json({ success: false, message: "Invalid user details" });
+        }
+        const createdUser = await UserMasterService.createUser(userDetails);
+        if (!createdUser.success) {
+            return res.status(500).send(createdUser);
+        }
+        return res.status(201).send(createdUser.message);
+    } catch (e) {
+        logger.error(`Error while creating user : `, e);
+        return res.status(500).json({ success: false, message: e.message });
+    }
+}
+
+async function updateUserDetails(req, res) {
+    try {
+        const userId = req.query.userId;
+        const userDetails = req.body;
+        if (!userId || !userDetails) {
+            return res.status(400).json({ success: false, message: "Invalid user details" });
+        }
+        const updatedUser = await UserMasterService.modifyUser(userId, userDetails);
+        if (!updatedUser.success) {
+            return res.status(500).send(updatedUser);
+        }
+        return res.status(200).send(updatedUser.message);
+    } catch (e) {
+        return res.status(500).json({success: false, message: e.message });
+    }
+}
+
+module.exports = {
+    createUser,
+    updateUserDetails,
+};

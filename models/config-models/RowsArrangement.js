@@ -44,7 +44,8 @@ module.exports = function (sequelize, DataTypes) {
         timestamps: false,
         comment: 'Admin will fill the data from the UI for this table which will store the row arrangement structure which will be used for visualisation and other purposes.',
         underscored: true,
-        freezeTableName: true
+        freezeTableName: true,
+        hasTrigger: true,
     })
     return RowsArrangement;
 }
