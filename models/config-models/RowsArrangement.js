@@ -16,9 +16,16 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        department: {
-            type: DataTypes.STRING,
+        departmentId: {
+            type: DataTypes.INTEGER,
             allowNull: false,
+            references: {
+                model: {
+                    tableName: 'departments',
+                    schema: 'lov',
+                },
+                key: 'department_id',
+            }
         },
         createdOn: {
             type: DataTypes.DATE,

@@ -2,7 +2,7 @@ const { createSchema } = require("../utils/schema");
 const logger = require('../utils/logger');
 
 const creatingSchema = async (sequelize, DataTypes) => {
-    const schemas = ['auth', 'config', 'allotment'];
+    const schemas = ['auth', 'config', 'allotment', 'lov'];
 
     try {
         const results = await Promise.allSettled(
