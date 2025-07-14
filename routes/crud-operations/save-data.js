@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const isAuth = require('../../middleware/auth');
 const rowsArrangementController = require('../../controllers/rows-arrangement');
 const userController = require('../../controllers/user-details');
 const handleMethodRouting = require("../handle-method-routings");
@@ -10,7 +11,7 @@ const mappings = {
     rowsArrangement: rowsArrangementController.createRows,
 };
 
-router.post('/', (req, res) => {
+router.post('/', isAuth, (req, res) => {
     handleMethodRouting(req, res, mappings);
 });
 
