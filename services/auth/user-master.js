@@ -100,8 +100,7 @@ const UserMasterService = {
             }
             const password = userDetails.password;
             // Encrypt password for generating JWT Token
-            const encryptedPassword = await bcrypt.hash(password, 10);
-            userDetails.password = encryptedPassword;
+            userDetails.password = await bcrypt.hash(password, 10);
             userDetails.modifiedOn = new Date();
             const updatedUser = await UserMaster.update(userDetails, {
                 where: { userId },
