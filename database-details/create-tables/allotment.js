@@ -3,7 +3,7 @@ const initialize = async (sequelize, DataTypes) => {
     await Bookings.sync({ force: true });
 
     return {
-        Bookings,
+        bookings: Bookings,
     };
 };
 

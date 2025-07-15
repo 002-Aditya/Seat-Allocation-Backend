@@ -8,8 +8,7 @@ const generateEmpCode = require("../../utils/get-e-code");
 const UserMasterService = {
 
     async getUserModel() {
-        const UserMaster = await getModel(db, "auth", "user_master");
-        return UserMaster;
+        return await getModel(db, "auth", "user_master");
     },
 
     async createUser(userDetails){
