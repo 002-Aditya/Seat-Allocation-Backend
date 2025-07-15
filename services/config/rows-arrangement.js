@@ -20,11 +20,12 @@ const RowsArrangementService = {
         }
     },
 
-    async createRowsArrangement(rowsArrangementData) {
+    async createRowsArrangement(rowsArrangementData, userId) {
         const t = await db.sequelize.transaction();
         try {
             const RowsArrangement = await this.getRowsArrangementModel();
             const filterInput = await filterData([rowsArrangementData]);
+            filterInput[0].createdBy = userId;
             const createdInstance = await RowsArrangement.create(filterInput[0], { transaction: t });
             const plainData = createdInstance.get({ plain: true });
             const filtered = await filterData([plainData]);

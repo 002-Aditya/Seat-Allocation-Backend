@@ -5,13 +5,13 @@ const { json } = require("express");
 
 async function createRows(req, res) {
     try {
-        console.log("Request User Id : ", req.userId);
         const rowsArrangementData = req.body;
         if (!req.body || req.body.length === 0) {
             logger.error("Rows arrangement data is not provided");
             return res.status(400).send({ success: false, message: "Rows arrangement data is not provided" });
         }
-        const rowsArrangement = await RowsArrangementService.createRowsArrangement(rowsArrangementData);
+        const userId = req.userId;
+        const rowsArrangement = await RowsArrangementService.createRowsArrangement(rowsArrangementData, userId);
         if (!rowsArrangement.success) {
             return res.status(500).send(json(rowsArrangement.message));
         }
