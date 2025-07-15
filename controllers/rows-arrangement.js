@@ -13,7 +13,7 @@ async function createRows(req, res) {
         const userId = req.userId;
         const rowsArrangement = await RowsArrangementService.createRowsArrangement(rowsArrangementData, userId);
         if (!rowsArrangement.success) {
-            return res.status(500).send(json(rowsArrangement.message));
+            return res.status(500).send(rowsArrangement);
         }
         return res.status(201).send(rowsArrangement.message);
     } catch (e) {

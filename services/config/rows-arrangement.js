@@ -1,6 +1,7 @@
 const db = require("../../utils/db-init");
 const logger = require("../../utils/logger");
 const { filterData } = require("../../utils/filter-data");
+const DepartmentsService = require("../lov/departments");
 
 // Creating a service object for encapsulating CRUD operations
 const RowsArrangementService = {
@@ -24,6 +25,11 @@ const RowsArrangementService = {
         const t = await db.sequelize.transaction();
         try {
             const RowsArrangement = await this.getRowsArrangementModel();
+            const fetchDepartment = await DepartmentsService.getDepartmentById(rowsArrangementData.departmentId);
+            if (!fetchDepartment.success) {
+                await t.rollback();
+                return { success: false, message: fetchDepartment.message };
+            }
             const filterInput = await filterData([rowsArrangementData]);
             filterInput[0].createdBy = userId;
             const createdInstance = await RowsArrangement.create(filterInput[0], { transaction: t });
