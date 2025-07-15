@@ -1,6 +1,6 @@
 const initialize = async (sequelize, DataTypes) => {
     const UserMaster = require('../../models/auth-models/UserMaster')(sequelize, DataTypes);
-    await UserMaster.sync({ force: false });
+    await UserMaster.sync({ force: true });
     return {
         user_master: UserMaster
     };

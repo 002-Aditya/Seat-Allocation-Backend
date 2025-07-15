@@ -33,17 +33,16 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false,
         },
         createdBy: {
-            type: DataTypes.STRING(10),
-            defaultValue: "SYSTEM",
-            allowNull: false,
+            type: DataTypes.INTEGER,
+            allowNull: false
         },
         modifiedOn: {
             type: DataTypes.DATE,
             allowNull: true,
         },
         modifiedBy: {
-            type: DataTypes.STRING,
-            allowNull: true,
+            type: DataTypes.INTEGER,
+            allowNull: true
         },
         isActive: {
             type: DataTypes.BOOLEAN,

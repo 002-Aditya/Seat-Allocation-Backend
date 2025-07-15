@@ -5,6 +5,7 @@ const { json } = require("express");
 
 async function createRows(req, res) {
     try {
+        console.log("Request User Id : ", req.userId);
         const rowsArrangementData = req.body;
         if (!req.body || req.body.length === 0) {
             logger.error("Rows arrangement data is not provided");
