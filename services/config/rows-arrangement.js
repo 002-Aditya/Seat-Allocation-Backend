@@ -67,7 +67,7 @@ const RowsArrangementService = {
                 return { success: false, message: "Rows arrangement model not found" };
             }
             const rowsArrangement = await RowsArrangement.findAll({
-                attributes: ['rowId', 'noOfSeats', 'department']
+                attributes: ['rowId', 'floorNo', 'noOfSeats', 'departmentId']
             });
             return { success: true, message: "Rows arrangement found", rowsArrangement };
         } catch (e) {
