@@ -3,7 +3,7 @@ const initialize = async (sequelize, DataTypes) => {
     await RowsArrangement.sync({ force: true });
 
     return {
-        RowsArrangement
+        rows_arrangement: RowsArrangement
     };
 };
 

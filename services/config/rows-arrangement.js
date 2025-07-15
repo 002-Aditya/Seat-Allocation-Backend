@@ -2,29 +2,23 @@ const db = require("../../utils/db-init");
 const logger = require("../../utils/logger");
 const { filterData } = require("../../utils/filter-data");
 const DepartmentsService = require("../lov/departments");
+const getModel = require("../../utils/getModel");
 
 // Creating a service object for encapsulating CRUD operations
 const RowsArrangementService = {
 
-    // Helper function to fetch RowsArrangementModel only if it exists after getting the whole db initialized
     async getRowsArrangementModel() {
-        try {
-            const db = await require("../../utils/db-init");
-            if (!db.config || !db.config.RowsArrangement) {
-                logger.error("Rows arrangement model not found");
-                return { success: false, message: "Rows arrangement model not found" };
-            }
-            return db.config.RowsArrangement;
-        } catch (e) {
-            logger.error("Error occurred while fetching rows arrangement model", e);
-            return { success: false, message: e.message };
-        }
+        return await getModel(db, "config", "rows_arrangement");
     },
 
     async createRowsArrangement(rowsArrangementData, userId) {
         const t = await db.sequelize.transaction();
         try {
-            const RowsArrangement = await this.getRowsArrangementModel();
+            const { success, message: RowsArrangement } = await this.getRowsArrangementModel();
+            if (!success) {
+                await t.rollback();
+                return { success: false, message: "Rows arrangement model not found" };
+            }
             const fetchDepartment = await DepartmentsService.getDepartmentById(rowsArrangementData.departmentId);
             if (!fetchDepartment.success) {
                 await t.rollback();
@@ -47,7 +41,10 @@ const RowsArrangementService = {
 
     async findRowsArrangementById(rowsArrangementId) {
         try {
-            const RowsArrangement = await this.getRowsArrangementModel();
+            const { success, message: RowsArrangement } = await this.getRowsArrangementModel();
+            if (!success) {
+                return { success: false, message: "Rows arrangement model not found" };
+            }
             const rowsArrangement = await RowsArrangement.findByPk(rowsArrangementId, {
                 raw: true,
                 attributes: ['rowId', 'noOfSeats', 'department']
@@ -65,7 +62,10 @@ const RowsArrangementService = {
 
     async findAllRowsArrangement() {
         try {
-            const RowsArrangement = await this.getRowsArrangementModel();
+            const { success, message: RowsArrangement } = await this.getRowsArrangementModel();
+            if (!success) {
+                return { success: false, message: "Rows arrangement model not found" };
+            }
             const rowsArrangement = await RowsArrangement.findAll({
                 attributes: ['rowId', 'noOfSeats', 'department']
             });
@@ -76,23 +76,32 @@ const RowsArrangementService = {
         }
     },
 
-    async updateRowsArrangement(rowsArrangementId, rowsArrangementData) {
+    async updateRowsArrangement(rowsArrangementId, rowsArrangementData, userId) {
         const t = await db.sequelize.transaction();
         try {
-            const RowsArrangement = await this.getRowsArrangementModel();
+            const { success, message: RowsArrangement } = await this.getRowsArrangementModel();
+            if (!success) {
+                await t.rollback();
+                return { success: false, message: "Rows arrangement model not found" };
+            }
 
             // Check if the record exists
             const ifRowsArrangementExists = await this.findRowsArrangementById(rowsArrangementId);
             if (!ifRowsArrangementExists.success) {
-                logger.warn(`Rows arrangement not found for id ${rowsArrangementId}`);
                 await t.rollback();
                 return ifRowsArrangementExists;
+            }
+
+            const fetchDepartment = await DepartmentsService.getDepartmentById(rowsArrangementData.departmentId);
+            if (!fetchDepartment.success) {
+                await t.rollback();
+                return { success: false, message: fetchDepartment.message };
             }
 
             // Modifying the input as per our needs
             const filterInput = await filterData([rowsArrangementData]);
             filterInput.modifiedOn = new Date();
-            filterInput.modifiedBy = "SYSTEM";
+            filterInput.modifiedBy = userId;
 
             // Updating the given record
             const [updatedCount, updatedRows] = await RowsArrangement.update(filterInput, {

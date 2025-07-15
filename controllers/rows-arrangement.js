@@ -57,7 +57,7 @@ async function updateRows(req, res) {
             logger.error("Rows arrangement data or rows id is not provided");
             return res.status(400).send({ success: false, message: "Rows arrangement data or rows id is not provided" });
         }
-        const rowsArrangement = await RowsArrangementService.updateRowsArrangement(rowsId, rowsArrangementData);
+        const rowsArrangement = await RowsArrangementService.updateRowsArrangement(rowsId, rowsArrangementData, req.userId);
         if (!rowsArrangement.success) {
             return res.status(500).send(rowsArrangement);
         }
