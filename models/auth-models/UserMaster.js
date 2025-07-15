@@ -5,7 +5,8 @@ module.exports = (sequelize, Sequelize) => {
         userId: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true
+            autoIncrement: true,
+            unique: true,
         },
         empCode: {
             type: DataTypes.STRING(50),

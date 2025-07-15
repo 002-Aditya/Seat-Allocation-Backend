@@ -24,7 +24,14 @@ module.exports = function (sequelize, DataTypes) {
         },
         bookedBy: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
+            references: {
+                model: {
+                    tableName: 'user_master',
+                    schema: 'auth',
+                },
+                key: 'user_id',
+            },
         },
         createdOn: {
             type: DataTypes.DATE,
@@ -32,17 +39,30 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false,
         },
         createdBy: {
-            type: DataTypes.STRING(10),
-            defaultValue: "SYSTEM",
+            type: DataTypes.INTEGER,
             allowNull: false,
+            references: {
+                model: {
+                    tableName: 'user_master',
+                    schema: 'auth',
+                },
+                key: 'user_id',
+            },
         },
         modifiedOn: {
             type: DataTypes.DATE,
             allowNull: true,
         },
         modifiedBy: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: true,
+            references: {
+                model: {
+                    tableName: 'user_master',
+                    schema: 'auth',
+                },
+                key: 'user_id',
+            },
         },
         isActive: {
             type: DataTypes.BOOLEAN,

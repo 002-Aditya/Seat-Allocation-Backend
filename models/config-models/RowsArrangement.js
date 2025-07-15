@@ -34,7 +34,14 @@ module.exports = function (sequelize, DataTypes) {
         },
         createdBy: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
+            references: {
+                model: {
+                    tableName: 'user_master',
+                    schema: 'auth',
+                },
+                key: 'user_id',
+            },
         },
         modifiedOn: {
             type: DataTypes.DATE,
@@ -42,7 +49,14 @@ module.exports = function (sequelize, DataTypes) {
         },
         modifiedBy: {
             type: DataTypes.INTEGER,
-            allowNull: true
+            allowNull: true,
+            references: {
+                model: {
+                    tableName: 'user_master',
+                    schema: 'auth',
+                },
+                key: 'user_id',
+            },
         },
         isActive: {
             type: DataTypes.BOOLEAN,
