@@ -166,7 +166,8 @@ const BookingService = {
                 where: {
                     bookedFor: userId,
                     isActive: true
-                }
+                },
+                order: [['bookingDate', 'ASC']],
             });
             return { success: true, message: booking };
         } catch (e) {
