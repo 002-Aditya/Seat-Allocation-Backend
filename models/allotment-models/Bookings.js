@@ -22,7 +22,7 @@ module.exports = function (sequelize, DataTypes) {
                 key: 'row_id',
             },
         },
-        bookedBy: {
+        bookedFor: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
