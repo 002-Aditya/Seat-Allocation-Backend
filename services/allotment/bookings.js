@@ -167,6 +167,7 @@ const BookingService = {
                     bookedFor: userId,
                     isActive: true
                 },
+                attributes: ["bookingId", "seatNo", "rowId", "bookedFor", "bookingDate"],
                 order: [['bookingDate', 'ASC']],
             });
             return { success: true, message: booking };
