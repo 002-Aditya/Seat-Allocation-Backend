@@ -91,7 +91,7 @@ const RowsArrangementService = {
                 await t.rollback();
                 return ifRowsArrangementExists;
             }
-
+            console.log("Department Id : ", rowsArrangementData.departmentId);
             const fetchDepartment = await DepartmentsService.getDepartmentById(rowsArrangementData.departmentId);
             if (!fetchDepartment.success) {
                 await t.rollback();
@@ -100,11 +100,11 @@ const RowsArrangementService = {
 
             // Modifying the input as per our needs
             const filterInput = await filterData([rowsArrangementData]);
-            filterInput.modifiedOn = new Date();
-            filterInput.modifiedBy = userId;
+            filterInput[0].modifiedOn = new Date();
+            filterInput[0].modifiedBy = userId;
 
             // Updating the given record
-            const [updatedCount, updatedRows] = await RowsArrangement.update(filterInput, {
+            const [updatedCount, updatedRows] = await RowsArrangement.update(filterInput[0], {
                 where: { rowId: rowsArrangementId },
                 transaction: t,
                 returning: true

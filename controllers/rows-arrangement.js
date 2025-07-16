@@ -50,19 +50,19 @@ async function findRowsById(req, res) {
 
 async function updateRows(req, res) {
     try {
+        const userId = req.userId;
+        const rowId = req.query.rowId;
         const rowsArrangementData = req.body;
-        const rowsId = req.query.rowsId;
-        if (!rowsArrangementData || rowsArrangementData.length === 0 || !rowsId || rowsId.length === 0) {
-            logger.error("Rows arrangement data or rows id is not provided");
-            return res.status(400).send({ success: false, message: "Rows arrangement data or rows id is not provided" });
+        if (!rowsArrangementData || rowsArrangementData.length === 0) {
+            return res.status(400).send({ success: false, message: "Rows arrangement data or row id is not provided" });
         }
-        const rowsArrangement = await RowsArrangementService.updateRowsArrangement(rowsId, rowsArrangementData, req.userId);
-        if (!rowsArrangement.success) {
-            return res.status(500).send(rowsArrangement);
+        const updatedRowsArrangement = await RowsArrangementService.updateRowsArrangement(rowId, rowsArrangementData, userId);
+        if (!updatedRowsArrangement.success) {
+            return res.status(500).send(updatedRowsArrangement);
         }
-        return res.status(201).send(rowsArrangement.message);
+        return res.status(201).send(updatedRowsArrangement.message);
     } catch (e) {
-        logger.error("Error occurred while updating rows arrangement", e);
+        logger.error("Error occurred while updating rows", e);
         return res.status(500).send({ success: false, message: e.message });
     }
 }
