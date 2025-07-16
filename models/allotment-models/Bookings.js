@@ -34,7 +34,7 @@ module.exports = function (sequelize, DataTypes) {
             },
         },
         bookingDate: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             allowNull: false,
         },
         createdOn: {

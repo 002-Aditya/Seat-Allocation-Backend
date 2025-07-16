@@ -9,7 +9,7 @@ const BookingService = {
         return await getModel(db, "allotment", "bookings");
     },
 
-    async validateBooking(rowId, seatNo, bookingDate) {
+    async validateBooking(rowId, seatNo, bookingDate, userId) {
         const fetchBookingDetails = await this.fetchBookingOnRowAndSeat(rowId, seatNo);
         if (!fetchBookingDetails.success) {
             return fetchBookingDetails;
@@ -23,7 +23,11 @@ const BookingService = {
         if (booking < current) {
             return { success: false, message: "Booking date cannot be less than current date" };
         }
-
+        // Check if user is sitting on some other seat for the same day
+        const validateSeating = await this.getSeatOnUserIdAndDate(userId, bookingDate);
+        if (!validateSeating.success) {
+            return { success: false, message: validateSeating.message };
+        }
         return { success: true, message: `Data verified` };
     },
 
@@ -34,7 +38,7 @@ const BookingService = {
             if (!success) {
                 return { success: false, message: "Bookings model not found" };
             }
-            const validate = await this.validateBooking(booking.rowId, booking.seatNo, booking.bookingDate);
+            const validate = await this.validateBooking(booking.rowId, booking.seatNo, booking.bookingDate, userId);
             if (!validate.success) {
                 await t.rollback();
                 return validate;
@@ -164,6 +168,30 @@ const BookingService = {
                     isActive: true
                 }
             });
+            return { success: true, message: booking };
+        } catch (e) {
+            logger.error(`Error in fetching seat of user, ${userId} `, e);
+            return { success: false, message: e.message }
+        }
+    },
+
+    async getSeatOnUserIdAndDate(userId, bookingDate) {
+        try {
+            const { success, message: Booking } = await this.getBookingModel();
+            if (!success) {
+                return { success: false, message: "Bookings model not found" };
+            }
+            const booking = await Booking.findOne({
+                where: {
+                    bookedFor: userId,
+                    isActive: true,
+                    bookingDate: bookingDate
+                },
+                raw: true,
+            });
+            if (booking) {
+                return { success: false, message: `User has already been booked for seat no ${booking.seatNo} on row ${booking.rowId}` };
+            }
             return { success: true, message: booking };
         } catch (e) {
             logger.error(`Error in fetching seat of user, ${userId} `, e);
