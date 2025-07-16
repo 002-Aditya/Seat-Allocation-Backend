@@ -33,6 +33,10 @@ module.exports = function (sequelize, DataTypes) {
                 key: 'user_id',
             },
         },
+        bookingDate: {
+            type: DataTypes.DATE,
+            allowNull: false,
+        },
         createdOn: {
             type: DataTypes.DATE,
             defaultValue: Sequelize.NOW,

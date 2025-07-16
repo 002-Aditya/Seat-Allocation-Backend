@@ -9,6 +9,24 @@ const BookingService = {
         return await getModel(db, "allotment", "bookings");
     },
 
+    async validateBooking(rowId, seatNo, bookingDate) {
+        const fetchBookingDetails = await this.fetchBookingOnRowAndSeat(rowId, seatNo);
+        if (!fetchBookingDetails.success) {
+            return fetchBookingDetails;
+        }
+
+        const booking = new Date(bookingDate);
+        const current = new Date();
+        booking.setHours(0, 0, 0, 0);
+        current.setHours(0, 0, 0, 0);
+
+        if (booking < current) {
+            return { success: false, message: "Booking date cannot be less than current date" };
+        }
+
+        return { success: true, message: `Data verified` };
+    },
+
     async createBooking(booking, userId) {
         const t = await db.sequelize.transaction();
         try {
@@ -16,13 +34,11 @@ const BookingService = {
             if (!success) {
                 return { success: false, message: "Bookings model not found" };
             }
-            // verify if some person is already allocated to the selected seat or not
-            const fetchBookingDetails = await this.fetchBookingOnRowAndSeat(booking.rowId, booking.seatNo);
-            if (!fetchBookingDetails.success) {
+            const validate = await this.validateBooking(booking.rowId, booking.seatNo, booking.bookingDate);
+            if (!validate.success) {
                 await t.rollback();
-                return fetchBookingDetails;
+                return validate;
             }
-
             const filterInput = await filterData([booking]);
             filterInput[0].createdBy = userId;
             const createdInstance = await Booking.create(filterInput[0], { transaction: t });
@@ -37,6 +53,41 @@ const BookingService = {
             return { success: false, message: e.message }
         }
     },
+
+    /*
+    * Deprecated
+    * */
+    // async updateBooking(bookingId, booking, userId) {
+    //     const t = await db.sequelize.transaction();
+    //     try {
+    //         const { success, message: Booking } = await this.getBookingModel();
+    //         if (!success) {
+    //             return { success: false, message: Booking };
+    //         }
+    //         const validate = await this.validateBooking(booking.rowId, booking.seatNo, booking.bookingDate);
+    //         if (!validate.success) {
+    //             await t.rollback();
+    //             return validate;
+    //         }
+    //         const filterInput = await filterData([booking]);
+    //         filterInput[0].modifiedBy = userId;
+    //         filterInput[0].modifiedOn = new Date();
+    //         const updatedInstance = await Booking.update(filterInput[0], {
+    //             where: {
+    //                 bookingId: bookingId,
+    //             },
+    //             plain: true
+    //         });
+    //         const filteredOutput = await filterData([updatedInstance]);
+    //         logger.info(`Booking has been updated for ${bookingId} by ${userId}`);
+    //         await t.commit();
+    //         return { success: true, message: filteredOutput[0] };
+    //     } catch (e) {
+    //         await t.rollback();
+    //         logger.error(`Error occurred while updating booking : ${bookingId}`, e);
+    //         return { success: false, message: e.message };
+    //     }
+    // },
 
     async fetchBookingOnRowAndSeat(rowId, seatNo) {
         try {

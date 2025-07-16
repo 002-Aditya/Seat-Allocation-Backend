@@ -18,6 +18,26 @@ async function createNewBooking(req, res) {
     }
 }
 
+/*
+* Deprecated
+* */
+// async function updateBooking(req, res) {
+//     try {
+//         const userId = req.userId;
+//         if (!req.body || req.body.length === 0) {
+//             return res.status(400).send({ success: false, message: "Body is empty" });
+//         }
+//         const booking = await BookingsService.updateBooking(req.params.bookingId, req.body, req.userId);
+//         if (!booking.success) {
+//             return res.status(400).send(booking);
+//         }
+//         return res.status(201).send(booking.message);
+//     } catch (e) {
+//         logger.error("Error occurred while updating booking", e);
+//         return res.status(400).send({ success: false, message: e.message });
+//     }
+// }
+
 async function getAllBookingsByRowId(req, res) {
     try {
         const rowId = req.query.rowId;
