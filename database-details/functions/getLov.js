@@ -1,4 +1,4 @@
-module.exports.getLovFunction = `CREATE OR REPLACE FUNCTION lov.inv_get_lov(
+module.exports.getLovFunction = `CREATE OR REPLACE FUNCTION lov.get_lov(
     params text
 )
 RETURNS jsonb
@@ -8,7 +8,7 @@ VOLATILE PARALLEL UNSAFE
 AS $BODY$
 DECLARE
     _source TEXT;
-    _hierarchy TEXT := 'tbl_mst_';
+    _hierarchy TEXT;
     _column_name TEXT;
     _column_label TEXT;
     _where_column TEXT;
@@ -25,7 +25,7 @@ BEGIN
     
     -- Extract values from the input JSON
     _source := input_json ->> 'source';
-    _hierarchy := _hierarchy || LOWER(input_json ->> 'hierarchy');
+    _hierarchy := input_json ->> 'hierarchy';
     _column_name := input_json ->> 'columnName';
     _column_label := input_json ->> 'columnValue';
     _where_column := input_json ->> 'whereColumn';
