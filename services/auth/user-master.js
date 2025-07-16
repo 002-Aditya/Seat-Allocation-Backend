@@ -98,12 +98,12 @@ const UserMasterService = {
                 await t.rollback();
                 return { success: false, message: "User model not found" };
             }
-            const password = userDetails.password;
             // Encrypt password for generating JWT Token
-            userDetails.password = await bcrypt.hash(password, 10);
+            userDetails.password = await bcrypt.hash(userDetails.password, 10);
             userDetails.modifiedOn = new Date();
+            userDetails.modifiedBy = userId;
             const updatedUser = await UserMaster.update(userDetails, {
-                where: { userId },
+                where: { userId: userId },
                 transaction: t,
                 returning: true,
             });

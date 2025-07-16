@@ -47,7 +47,7 @@ const RowsArrangementService = {
             }
             const rowsArrangement = await RowsArrangement.findByPk(rowsArrangementId, {
                 raw: true,
-                attributes: ['rowId', 'noOfSeats', 'department']
+                attributes: ['rowId', 'floorNo', 'noOfSeats', 'departmentId']
             });
             if (!rowsArrangement) {
                 logger.warn(`Rows arrangement not found for id ${rowsArrangementId}`);

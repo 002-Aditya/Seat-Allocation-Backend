@@ -1,7 +1,6 @@
 // Using the row arrangement service layer for applying CRUD operations on data in the row table
 const RowsArrangementService = require('../services/config/rows-arrangement');
 const logger = require('../utils/logger');
-const { json } = require("express");
 
 async function createRows(req, res) {
     try {
