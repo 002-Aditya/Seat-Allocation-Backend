@@ -3,9 +3,9 @@ const { Sequelize, DataTypes } = require('sequelize');
 module.exports = (sequelize, Sequelize) => {
     const UserMaster = sequelize.define('user_master', {
         userId: {
-            type: DataTypes.INTEGER,
+            type: Sequelize.UUID,
+            defaultValue: Sequelize.UUIDV1,
             primaryKey: true,
-            autoIncrement: true,
             unique: true,
         },
         empCode: {
