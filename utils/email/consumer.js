@@ -35,7 +35,7 @@ async function consumeQueue() {
                     const result = await transporter.sendMail(emailData);
                     emailData.messageId = result.messageId;
                     // emailData.success = !!(result.accepted || result.accepted.length > 0);
-                    logger.info('Email sent to:' + emailData.to);
+                    logger.info('Email sent to: ' + emailData.to);
                 } catch (error) {
                     // emailData.success = false;
                     emailData.error = error;

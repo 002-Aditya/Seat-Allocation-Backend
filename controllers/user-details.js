@@ -16,7 +16,7 @@ async function createUser(req, res) {
         const emailData = {
             to: userDetails.email,
             subject: 'Welcome to Our Platform!',
-            text: `<p>Hi <b>${userDetails.firstName + ' ' + userDetails.secondName || 'User'}</b>,\n\nThank you for registering. <br> Your account has been successfully created.</p>`
+            html: `<p>Hi <b>${userDetails.firstName + ' ' + userDetails.secondName || 'User'}</b>,\n\nThank you for registering on seat allocation platform. <br> Your account has been successfully created.</p>`
         };
 
         // Send email job to RabbitMQ
