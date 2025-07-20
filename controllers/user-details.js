@@ -1,5 +1,6 @@
 const UserMasterService = require('../services/auth/user-master');
 const logger = require('../utils/logger');
+const sendEmailToQueue = require("../utils/email/email-queue");
 
 async function createUser(req, res) {
     try {
@@ -11,6 +12,15 @@ async function createUser(req, res) {
         if (!createdUser.success) {
             return res.status(500).send(createdUser);
         }
+
+        const emailData = {
+            to: userDetails.email,
+            subject: 'Welcome to Our Platform!',
+            text: `<p>Hi <b>${userDetails.firstName + ' ' + userDetails.secondName || 'User'}</b>,\n\nThank you for registering. <br> Your account has been successfully created.</p>`
+        };
+
+        // Send email job to RabbitMQ
+        await sendEmailToQueue(emailData);
         return res.status(201).send(createdUser.message);
     } catch (e) {
         logger.error(`Error while creating user : `, e);
