@@ -1,6 +1,6 @@
-const db = require('../../utils/db-init');
+const db = require('../../utils/database/db-init');
 const logger = require('../../utils/logger');
-const getModel = require('../../utils/getModel');
+const getModel = require('../../utils/database/getModel');
 
 const DepartmentsService = {
 

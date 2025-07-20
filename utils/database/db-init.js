@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const { Client } = require('pg');
-const logger = require('./logger');
-const initializeDatabase = require('../database-details/initialize-database');
+const logger = require('../logger');
+const initializeDatabase = require('../../database-details/initialize-database');
 
 async function createDatabaseIfNotExists() {
     const client = new Client({

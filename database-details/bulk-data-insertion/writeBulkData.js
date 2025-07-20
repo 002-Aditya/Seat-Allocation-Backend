@@ -1,5 +1,5 @@
 const logger = require("../../utils/logger");
-const getModel = require("../../utils/getModel");
+const getModel = require("../../utils/database/getModel");
 
 async function insertGeneric(db, schemaName, modelName, bulkDataFilePath) {
     const t = await db.sequelize.transaction();

@@ -1,8 +1,8 @@
-const db = require("../../utils/db-init");
+const db = require("../../utils/database/db-init");
 const logger = require("../../utils/logger");
 const { filterData } = require("../../utils/filter-data");
 const DepartmentsService = require("../lov/departments");
-const getModel = require("../../utils/getModel");
+const getModel = require("../../utils/database/getModel");
 
 // Creating a service object for encapsulating CRUD operations
 const RowsArrangementService = {

@@ -1,4 +1,4 @@
-const logger = require("./logger");
+const logger = require("../logger");
 
 async function getModel(db, schemaName, modelName) {
     try {

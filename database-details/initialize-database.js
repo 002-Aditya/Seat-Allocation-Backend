@@ -4,6 +4,7 @@ const authSchema = require('./create-tables/auth');
 const configSchema = require('./create-tables/config');
 const allotmentSchema = require('./create-tables/allotment');
 const lovSchema = require('./create-tables/lov');
+const notificationSchema = require('./create-tables/notifications');
 const { insertBulkData } = require('./bulk-data-insertion/insert-bulk-data');
 const { createFunctions } = require("./createFunctions");
 
@@ -17,6 +18,7 @@ const initializeDatabase = async (sequelize, DataTypes, db) => {
         db.auth = await authSchema.initialize(sequelize, DataTypes);
         db.config = await configSchema.initialize(sequelize, DataTypes);
         db.allotment = await allotmentSchema.initialize(sequelize, DataTypes);
+        db.notifications = await notificationSchema.initialize(sequelize, DataTypes);
         await insertBulkData(db);
         await createFunctions(db);
         logger.info('Database schemas and models initialized successfully');
