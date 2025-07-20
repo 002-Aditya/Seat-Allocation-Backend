@@ -2,7 +2,9 @@ require('dotenv').config();
 const amqp = require('amqplib');
 const nodemailer = require('nodemailer');
 const logger = require('../logger');
-// const EmailMasterService = require('../../services/notifications/email-master');
+const db = require('../../utils/database/db');
+const initializeDatabase = require('../../database-details/initialize-database');
+const { Sequelize, DataTypes } = db;
 
 async function consumeQueue() {
     const connection = await amqp.connect(process.env.RABBITMQ_URL);
@@ -20,24 +22,35 @@ async function consumeQueue() {
                     service: 'gmail',
                     host: process.env.EMAIL_HOST,
                     port: parseInt(process.env.EMAIL_PORT),
-                    // Secure to be false for port 587 as it uses plain text
                     secure: false,
                     auth: {
                         user: process.env.EMAIL_USER,
                         pass: process.env.EMAIL_PASS
                     }
                 });
+
                 await transporter.sendMail(emailData);
-                // await EmailMasterService.saveEmailMaster(emailData);
+
+                const EmailMasterService = require('../../services/notifications/email-master');
+                await EmailMasterService.saveEmailMaster(emailData);
+
                 logger.info('Email sent to:', emailData.to);
                 channel.ack(msg);
             } catch (error) {
                 logger.error('Error sending email:', error);
-                // Retry
-                // channel.nack(msg);
             }
         }
     }, { noAck: false });
 }
 
-consumeQueue();
+(async () => {
+    try {
+        await db.sequelize.authenticate();
+        await initializeDatabase(db.sequelize, DataTypes, db);
+        logger.info("Consumer DB models initialized");
+        consumeQueue();
+    } catch (err) {
+        logger.error("Failed to initialize DB models in consumer:", err);
+        process.exit(1);
+    }
+})();

@@ -2,7 +2,6 @@ const logger = require("../logger");
 
 async function getModel(db, schemaName, modelName) {
     try {
-        const db = await require("./db-init");
         const schema = db[schemaName];
         if (!schema) {
             logger.error(`Schema "${schemaName}" not found in database instance.`);
