@@ -6,6 +6,7 @@ const initialize = async (sequelize, DataTypes) => {
 
     return {
         email_master: EmailMaster,
+        otp_details: OtpMaster,
     };
 };
 

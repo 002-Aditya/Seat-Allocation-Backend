@@ -32,9 +32,9 @@ const OtpDetailsService = {
             });
             await t.commit();
             const emailData = {
-                to: userDetails.email,
-                subject: 'Welcome to Our Platform!',
-                html: `<p>Hi <b>${userDetails.firstName + ' ' + userDetails.secondName || 'User'}</b>,\n\n Your OTP is <b>${otp}</b> <br> It is valid till 15 minutes.</p>`
+                to: email,
+                subject: 'OTP',
+                html: `<p>Hi <b>${userDetails.message.firstName + ' ' + userDetails.message.secondName || 'User'}</b>,\n\n Your OTP is <b>${otp}</b> <br> It is valid for 15 minutes.</p>`
             };
 
             // Send email job to RabbitMQ

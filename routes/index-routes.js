@@ -18,7 +18,7 @@ const registerRoutes = (app) => {
     apiRouter.use('/update-data', updateRecord);
     apiRouter.post('/login', login);
     apiRouter.post('/lov', isAuth, getDropDown);
-    apiRouter.get("/auth/otp", generateOtp);
+    apiRouter.post("/public/auth/otp", generateOtp);
 
     app.use('/seat-allocation', apiRouter);
 };

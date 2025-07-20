@@ -3,7 +3,8 @@ const logger = require('../utils/logger');
 
 const generateOtp = async (req, res) => {
     try {
-        const email = req.body.userEmail;
+        const otpDetails = req.body;
+        const email = otpDetails.email;
         const generatedOtp = await GenerateOtpService.saveOtpDetails(email);
         if (!generatedOtp.success) {
             return res.status(500).send(generatedOtp);
