@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 const logger = require('../logger');
 const db = require('../../utils/database/db');
 const initializeDatabase = require('../../database-details/initialize-database');
-const { Sequelize, DataTypes } = db;
+const { Sequelize, DataTypes } = require('sequelize');
 
 async function consumeQueue() {
     const connection = await amqp.connect(process.env.RABBITMQ_URL);
@@ -43,14 +43,16 @@ async function consumeQueue() {
     }, { noAck: false });
 }
 
-(async () => {
-    try {
-        await db.sequelize.authenticate();
-        await initializeDatabase(db.sequelize, DataTypes, db);
-        logger.info("Consumer DB models initialized");
-        consumeQueue();
-    } catch (err) {
-        logger.error("Failed to initialize DB models in consumer:", err);
-        process.exit(1);
-    }
-})();
+setTimeout(() => {
+    (async () => {
+        try {
+            await db.sequelize.authenticate();
+            await initializeDatabase(db.sequelize, DataTypes, db);
+            logger.info("Consumer DB models initialized");
+            consumeQueue();
+        } catch (err) {
+            logger.error("Failed to initialize DB models in consumer:", err);
+            process.exit(1);
+        }
+    })();
+}, 1000);
