@@ -7,6 +7,10 @@ module.exports = function (sequelize, DataTypes) {
             defaultValue: Sequelize.UUIDV1,
             primaryKey: true
         },
+        messageId: {
+            type: DataTypes.TEXT,
+            allowNull: false
+        },
         to: {
             type: DataTypes.STRING(50),
             validate: {
@@ -28,6 +32,13 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.DATE,
             defaultValue: Sequelize.NOW,
             allowNull: false,
+        },
+        success: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+        },
+        error: {
+            type: DataTypes.TEXT,
         },
         isRetried: {
             type: DataTypes.BOOLEAN,
