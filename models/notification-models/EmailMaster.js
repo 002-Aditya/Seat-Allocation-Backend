@@ -33,10 +33,10 @@ module.exports = function (sequelize, DataTypes) {
             defaultValue: Sequelize.NOW,
             allowNull: false,
         },
-        success: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-        },
+        // success: {
+        //     type: DataTypes.BOOLEAN,
+        //     allowNull: false,
+        // },
         error: {
             type: DataTypes.TEXT,
         },
