@@ -5,6 +5,7 @@ const configSchema = require('./create-tables/config');
 const allotmentSchema = require('./create-tables/allotment');
 const lovSchema = require('./create-tables/lov');
 const { insertBulkData } = require('./bulk-data-insertion/insert-bulk-data');
+const { createFunctions } = require("./createFunctions");
 
 const initializeDatabase = async (sequelize, DataTypes, db) => {
     try {
@@ -17,6 +18,7 @@ const initializeDatabase = async (sequelize, DataTypes, db) => {
         db.config = await configSchema.initialize(sequelize, DataTypes);
         db.allotment = await allotmentSchema.initialize(sequelize, DataTypes);
         await insertBulkData(db);
+        await createFunctions(db);
         logger.info('Database schemas and models initialized successfully');
     } catch (err) {
         logger.error('Database initialization error', err);

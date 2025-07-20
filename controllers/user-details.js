@@ -20,18 +20,19 @@ async function createUser(req, res) {
 
 async function updateUserDetails(req, res) {
     try {
-        const userId = req.query.userId;
+        const userId = req.userId;
         const userDetails = req.body;
-        if (!userId || !userDetails) {
+        if (!userDetails || userDetails.length === 0) {
             return res.status(400).json({ success: false, message: "Invalid user details" });
         }
+        delete userDetails.userId;
         const updatedUser = await UserMasterService.modifyUser(userId, userDetails);
         if (!updatedUser.success) {
             return res.status(500).send(updatedUser);
         }
-        return res.status(200).send(updatedUser.message);
+        return res.status(201).send(updatedUser.message);
     } catch (e) {
-        return res.status(500).json({success: false, message: e.message });
+        return res.status(500).json({ success: false, message: e.message });
     }
 }
 

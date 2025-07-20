@@ -1,6 +1,5 @@
 const BookingsService = require("../services/allotment/bookings");
 const logger = require("../utils/logger");
-const { json } = require("express");
 
 async function createNewBooking(req, res) {
     try {
@@ -8,9 +7,9 @@ async function createNewBooking(req, res) {
         if (!bookSeat || bookSeat.length === 0) {
             return res.status(400).send({ success: false, message: "Body is empty" });
         }
-        const bookedSeat = await BookingsService.createBooking(req.body);
+        const bookedSeat = await BookingsService.createBooking(bookSeat, req.userId);
         if (!bookedSeat.success) {
-            return res.status(500).send(json(bookedSeat.message));
+            return res.status(500).send(bookedSeat);
         }
         return res.status(201).send(bookedSeat.message);
     } catch (e) {
@@ -19,7 +18,27 @@ async function createNewBooking(req, res) {
     }
 }
 
-async function getAllBookings(req, res) {
+/*
+* Deprecated
+* */
+// async function updateBooking(req, res) {
+//     try {
+//         const userId = req.userId;
+//         if (!req.body || req.body.length === 0) {
+//             return res.status(400).send({ success: false, message: "Body is empty" });
+//         }
+//         const booking = await BookingsService.updateBooking(req.params.bookingId, req.body, req.userId);
+//         if (!booking.success) {
+//             return res.status(400).send(booking);
+//         }
+//         return res.status(201).send(booking.message);
+//     } catch (e) {
+//         logger.error("Error occurred while updating booking", e);
+//         return res.status(400).send({ success: false, message: e.message });
+//     }
+// }
+
+async function getAllBookingsByRowId(req, res) {
     try {
         const rowId = req.query.rowId;
         if (!rowId) {
@@ -36,7 +55,33 @@ async function getAllBookings(req, res) {
     }
 }
 
+async function getAllBookings(req, res) {
+    try {
+        const fetchAllActiveBookings = await BookingsService.findAllBookings();
+        if (!fetchAllActiveBookings.success) {
+            return res.status(500).send(fetchAllActiveBookings);
+        }
+        return res.status(200).send(fetchAllActiveBookings.message);
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message });
+    }
+}
+
+async function getBookingByUserId(req, res) {
+    try {
+        const seatData = await BookingsService.getSeatOnUserId(req.userId);
+        if (!seatData.success) {
+            return res.status(500).send(seatData);
+        }
+        return res.status(200).send(seatData.message);
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message });
+    }
+}
+
 module.exports = {
     createNewBooking,
+    getAllBookingsByRowId,
     getAllBookings,
+    getBookingByUserId
 };
