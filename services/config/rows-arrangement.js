@@ -3,6 +3,7 @@ const logger = require("../../utils/logger");
 const { filterData } = require("../../utils/filter-data");
 const DepartmentsService = require("../lov/departments");
 const getModel = require("../../utils/database/getModel");
+const setCurrentUserId = require("../../utils/database/db-config-variable");
 
 // Creating a service object for encapsulating CRUD operations
 const RowsArrangementService = {
@@ -91,7 +92,6 @@ const RowsArrangementService = {
                 await t.rollback();
                 return ifRowsArrangementExists;
             }
-            console.log("Department Id : ", rowsArrangementData.departmentId);
             const fetchDepartment = await DepartmentsService.getDepartmentById(rowsArrangementData.departmentId);
             if (!fetchDepartment.success) {
                 await t.rollback();
@@ -102,6 +102,8 @@ const RowsArrangementService = {
             const filterInput = await filterData([rowsArrangementData]);
             filterInput[0].modifiedOn = new Date();
             filterInput[0].modifiedBy = userId;
+
+            await setCurrentUserId(db.sequelize, userId, t);
 
             // Updating the given record
             const [updatedCount, updatedRows] = await RowsArrangement.update(filterInput[0], {
