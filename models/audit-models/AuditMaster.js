@@ -24,6 +24,9 @@ module.exports = (sequelize, Sequelize) => {
             type: DataTypes.JSONB,
             allowNull: false,
         },
+        newValue: {
+            type: DataTypes.JSONB,
+        },
         updatedBy: {
             type: DataTypes.UUID,
             references: {
