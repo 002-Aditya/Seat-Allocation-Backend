@@ -7,11 +7,16 @@
  * for audit logging or trigger functions.
  */
 
-module.exports = async function setCurrentUserId(sequelize, userId) {
+module.exports = async function setCurrentUserId(sequelize, userId, transaction = null) {
     if (!userId) {
         throw new Error("userId is required to set app.current_user_id");
     }
 
-    // Setting the session variable in PostgreSQL
-    await sequelize.query(`SET app.current_user_id = '${userId}'`);
+    const query = `SET app.current_user_id = '${userId}'`;
+
+    if (transaction) {
+        await sequelize.query(query, { transaction });
+    } else {
+        await sequelize.query(query);
+    }
 };

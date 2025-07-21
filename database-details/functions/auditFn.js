@@ -10,12 +10,12 @@ BEGIN
     END;
 
     IF (TG_OP = 'UPDATE') THEN
-        INSERT INTO audit.logged_actions(schemaName, tableName, actionPerformed, previousValue, updatedBy)
-        VALUES (TG_TABLE_SCHEMA::TEXT, TG_TABLE_NAME::TEXT, 'U', to_jsonb(OLD), current_user_id);
+        INSERT INTO audit.logged_actions(audit_id, schema_name, table_name, action_performed, old_value, updated_by, action_time_stamp)
+        VALUES (uuid_generate_v1(), TG_TABLE_SCHEMA::TEXT, TG_TABLE_NAME::TEXT, 'U', to_jsonb(OLD), current_user_id, NOW());
         RETURN NEW;
     ELSIF (TG_OP = 'DELETE') THEN
-        INSERT INTO audit.logged_actions(schemaName, tableName, actionPerformed, previousValue, updatedBy)
-        VALUES (TG_TABLE_SCHEMA::TEXT, TG_TABLE_NAME::TEXT, 'D', to_jsonb(OLD), current_user_id);
+        INSERT INTO audit.logged_actions(audit_id, schema_name, table_name, action_performed, old_value, updated_by, action_time_stamp)
+        VALUES (uuid_generate_v1(), TG_TABLE_SCHEMA::TEXT, TG_TABLE_NAME::TEXT, 'D', to_jsonb(OLD), current_user_id, NOW());
         RETURN OLD;
     END IF;
 

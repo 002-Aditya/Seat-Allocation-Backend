@@ -4,6 +4,7 @@ const { filterData } = require('../../utils/filter-data');
 const getModel = require('../../utils/database/getModel');
 const bcrypt = require('bcrypt');
 const generateEmpCode = require("../../utils/get-e-code");
+const setCurrentUserId = require("../../utils/database/db-config-variable");
 
 const UserMasterService = {
 
@@ -102,6 +103,7 @@ const UserMasterService = {
             userDetails.password = await bcrypt.hash(userDetails.password, 10);
             userDetails.modifiedOn = new Date();
             userDetails.modifiedBy = userId;
+            await setCurrentUserId(db.sequelize, userId, t);
             const updatedUser = await UserMaster.update(userDetails, {
                 where: { userId: userId },
                 transaction: t,
