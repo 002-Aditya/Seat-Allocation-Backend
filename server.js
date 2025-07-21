@@ -48,5 +48,6 @@ server.on('error', (error) => {
     }
 });
 server.on('listening', () => {
+    console.log("This is added for git testing!!")
     logger.info(`Server listening on port ${port}`);
 });
