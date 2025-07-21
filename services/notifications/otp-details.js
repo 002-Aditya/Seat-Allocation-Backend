@@ -4,6 +4,7 @@ const getModel = require('../../utils/database/getModel');
 const generateOtp = require("../../utils/generateOtp");
 const UserMasterService = require("../auth/user-master");
 const sendEmailToQueue = require("../../utils/email/email-queue");
+const setCurrentUserId = require("../../utils/database/db-config-variable");
 
 const OtpDetailsService = {
 
@@ -64,7 +65,7 @@ const OtpDetailsService = {
         }
     },
 
-    async updateOtp(otpId, otpDetails){
+    async updateOtp(otpId, otpDetails, userId){
         const t = await db.sequelize.transaction();
         try {
             const { success, message: OtpDetails } = await this.getOtpDetails();
@@ -73,6 +74,7 @@ const OtpDetailsService = {
                 logger.error("Otp Details model not initialized");
                 return { success: false, message: OtpDetails };
             }
+            await setCurrentUserId(db.sequelize, userId, t);
             const updateOtpDetails = await OtpDetails.update(otpDetails, {
                 where: { otpId: otpId },
                 transaction: t,
@@ -100,10 +102,16 @@ const OtpDetailsService = {
                 return { success: false, message: "Incorrect or expired OTP" };
             }
 
-            let updateOtpDetails = { isVerified: true };
-            await this.updateOtp(correctOtp.message.otpId, updateOtpDetails);
+            // Fetch userId on the basis of email
+            const userDetails = await UserMasterService.getUserByEmail(email);
+            if (!userDetails.success) {
+                return userDetails;
+            }
 
-            return { success: true, message: "OTP verified successfully" };
+            let updateOtpDetails = { isVerified: true };
+            await this.updateOtp(correctOtp.message.otpId, updateOtpDetails, userDetails.message.userId);
+
+            return { success: true, message: userDetails.message };
         } catch (e) {
             return { success: false, message: e.message };
         }
