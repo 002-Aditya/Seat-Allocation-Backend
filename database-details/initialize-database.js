@@ -5,8 +5,10 @@ const configSchema = require('./create-tables/config');
 const allotmentSchema = require('./create-tables/allotment');
 const lovSchema = require('./create-tables/lov');
 const notificationSchema = require('./create-tables/notifications');
+const auditSchema = require('./create-tables/audit');
 const { insertBulkData } = require('./bulk-data-insertion/insert-bulk-data');
 const { createFunctions } = require("./createFunctions");
+const createAuditTriggers = require("./triggers/createAuditTriggers");
 
 const initializeDatabase = async (sequelize, DataTypes, db) => {
     try {
@@ -19,8 +21,10 @@ const initializeDatabase = async (sequelize, DataTypes, db) => {
         db.config = await configSchema.initialize(sequelize, DataTypes);
         db.allotment = await allotmentSchema.initialize(sequelize, DataTypes);
         db.notifications = await notificationSchema.initialize(sequelize, DataTypes);
+        db.audit = await auditSchema.initialize(sequelize, DataTypes);
         await insertBulkData(db);
         await createFunctions(db);
+        await createAuditTriggers(db);
         logger.info('Database schemas and models initialized successfully');
     } catch (err) {
         logger.error('Database initialization error', err);
