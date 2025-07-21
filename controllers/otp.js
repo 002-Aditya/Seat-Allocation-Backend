@@ -38,6 +38,7 @@ const verifyOtp = async (req, res) => {
 
         return res.status(201).send({
             token: token,
+            fullName: `${userDetails.message.firstName} ${userDetails.message.secondName}${userDetails.message.otherName ? ' ' + userDetails.message.otherName : ''}`,
             message: "Authentication successful"
         });
     } catch (e) {

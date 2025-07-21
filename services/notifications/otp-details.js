@@ -24,7 +24,7 @@ const OtpDetailsService = {
                 return { success: false, message: userDetails.message };
             }
             let otpDetails = {};
-            otpDetails.userId = userDetails.message.userId;
+            otpDetails.email = email;
             const otp = generateOtp();
             otpDetails.otp = otp;
             const savedOtpDetails = await OtpDetails.create(otpDetails, {
@@ -56,7 +56,7 @@ const OtpDetailsService = {
             }
             const otpDetails = await OtpDetails.findOne({ where: { email: email, isVerified: false }, raw: true });
             if (!otpDetails) {
-                return { success: false, message: `Otp details not found for email, ${email}` };
+                return { success: false, message: `OTP for : ${email} does not exist, its either expired or incorrect OTP is provided.` };
             }
             return { success: true, message: otpDetails };
         } catch (e) {
@@ -78,7 +78,7 @@ const OtpDetailsService = {
                 transaction: t,
             });
             await t.commit();
-            return { success: true, message: updateOtpDetails.get({ plain: true }) };
+            return { success: true, message: updateOtpDetails.dataValues };
         } catch (e) {
             await t.rollback();
             logger.error(`Error occurred while updating otp details: `, e);
@@ -86,24 +86,29 @@ const OtpDetailsService = {
         }
     },
 
-    async verifyOtp(email, otp){
+    async verifyOtp(email, otp) {
         try {
             const correctOtp = await this.getOtp(email);
             if (!correctOtp.success) {
                 return correctOtp;
             }
             const currentTime = new Date();
-            if (parseInt(correctOtp.message.otp) !== otp || (currentTime < correctOtp.message.expiredAt)) {
-                return { success: false, message: "Incorrect OTP" };
+            const dbOtp = correctOtp.message.otp;
+            const expiredAt = new Date(correctOtp.message.expiredAt);
+
+            if (dbOtp !== otp || currentTime > expiredAt) {
+                return { success: false, message: "Incorrect or expired OTP" };
             }
-            let updateOtpDetails = {};
-            updateOtpDetails.isVerified = true;
+
+            let updateOtpDetails = { isVerified: true };
             await this.updateOtp(correctOtp.message.otpId, updateOtpDetails);
+
             return { success: true, message: "OTP verified successfully" };
         } catch (e) {
             return { success: false, message: e.message };
         }
     }
+
 }
 
 module.exports = OtpDetailsService;
