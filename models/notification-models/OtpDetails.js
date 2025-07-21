@@ -7,15 +7,15 @@ module.exports = function (sequelize, DataTypes) {
             defaultValue: Sequelize.UUIDV1,
             primaryKey: true,
         },
-        userId: {
-            type: DataTypes.UUID,
+        email: {
+            type: DataTypes.TEXT,
             allowNull: false,
             references: {
                 model: {
                     tableName: 'user_master',
                     schema: 'auth',
                 },
-                key: 'user_id',
+                key: 'email',
             }
         },
         otp: {

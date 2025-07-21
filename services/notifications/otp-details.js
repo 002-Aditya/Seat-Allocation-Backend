@@ -45,6 +45,64 @@ const OtpDetailsService = {
             await t.rollback();
             return { success: false, message: e };
         }
+    },
+
+    async getOtp(email){
+        try {
+            const { success, message: OtpDetails } = await this.getOtpDetails();
+            if (!success) {
+                logger.error("Otp Details model not initialized");
+                return { success: false, message: OtpDetails };
+            }
+            const otpDetails = await OtpDetails.findOne({ where: { email: email, isVerified: false }, raw: true });
+            if (!otpDetails) {
+                return { success: false, message: `Otp details not found for email, ${email}` };
+            }
+            return { success: true, message: otpDetails };
+        } catch (e) {
+            return { success: false, message: e.message };
+        }
+    },
+
+    async updateOtp(otpId, otpDetails){
+        const t = await db.sequelize.transaction();
+        try {
+            const { success, message: OtpDetails } = await this.getOtpDetails();
+            if (!success) {
+                await t.rollback();
+                logger.error("Otp Details model not initialized");
+                return { success: false, message: OtpDetails };
+            }
+            const updateOtpDetails = await OtpDetails.update(otpDetails, {
+                where: { otpId: otpId },
+                transaction: t,
+            });
+            await t.commit();
+            return { success: true, message: updateOtpDetails.get({ plain: true }) };
+        } catch (e) {
+            await t.rollback();
+            logger.error(`Error occurred while updating otp details: `, e);
+            return { success: false, message: e };
+        }
+    },
+
+    async verifyOtp(email, otp){
+        try {
+            const correctOtp = await this.getOtp(email);
+            if (!correctOtp.success) {
+                return correctOtp;
+            }
+            const currentTime = new Date();
+            if (parseInt(correctOtp.message.otp) !== otp || (currentTime < correctOtp.message.expiredAt)) {
+                return { success: false, message: "Incorrect OTP" };
+            }
+            let updateOtpDetails = {};
+            updateOtpDetails.isVerified = true;
+            await this.updateOtp(correctOtp.message.otpId, updateOtpDetails);
+            return { success: true, message: "OTP verified successfully" };
+        } catch (e) {
+            return { success: false, message: e.message };
+        }
     }
 }
 

@@ -1,5 +1,7 @@
 const GenerateOtpService = require('../services/notifications/otp-details');
-const logger = require('../utils/logger');
+const UserMasterService = require('../services/auth/user-master');
+const { generateToken } = require('../utils/generate-jwt-token');
+const logger = require("../utils/logger");
 
 const generateOtp = async (req, res) => {
     try {
@@ -17,6 +19,33 @@ const generateOtp = async (req, res) => {
     }
 }
 
+const verifyOtp = async (req, res) => {
+    try {
+        const otpDetails = req.body;
+        const { otp, email } = otpDetails;
+        const verifiedOtp = await GenerateOtpService.verifyOtp(email, otp);
+        if (!verifiedOtp.success) {
+            return res.status(400).send(verifiedOtp);
+        }
+        // Fetch userId on the basis of email
+        const userDetails = await UserMasterService.getUserByEmail(email);
+        if (!userDetails.success) {
+            return res.status(400).send(userDetails);
+        }
+        // After successfully verifying OTP, generate JWT Token
+        const token = generateToken({ userId: userDetails.message.userId });
+        logger.info(`User with userId ${userDetails.message.userId} logged in successfully`);
+
+        return res.status(201).send({
+            token: token,
+            message: "Authentication successful"
+        });
+    } catch (e) {
+        return res.status(500).send({ success: false, message: e.message });
+    }
+}
+
 module.exports = {
     generateOtp,
+    verifyOtp,
 };

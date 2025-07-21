@@ -6,7 +6,7 @@ const getSingleRecord = require('./crud-operations/fetch-one');
 const updateRecord = require('./crud-operations/update-data');
 const { login } = require('../controllers/authentication');
 const { getDropDown } = require("../controllers/lov");
-const { generateOtp } = require("../controllers/otp");
+const { generateOtp, verifyOtp } = require("../controllers/otp");
 
 const registerRoutes = (app) => {
     const apiRouter = express.Router();
@@ -18,7 +18,8 @@ const registerRoutes = (app) => {
     apiRouter.use('/update-data', updateRecord);
     apiRouter.post('/login', login);
     apiRouter.post('/lov', isAuth, getDropDown);
-    apiRouter.post("/public/auth/otp", generateOtp);
+    apiRouter.post("/public/login/otp", generateOtp);
+    apiRouter.post("/public/login/verify-otp", verifyOtp);
 
     app.use('/seat-allocation', apiRouter);
 };
