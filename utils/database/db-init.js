@@ -1,7 +1,7 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const db = require('./db');
 const { Client } = require('pg');
-const logger = require('./logger');
-const initializeDatabase = require('../database-details/initialize-database');
+const logger = require('../logger');
+const initializeDatabase = require('../../database-details/initialize-database');
 
 async function createDatabaseIfNotExists() {
     const client = new Client({
@@ -33,27 +33,11 @@ async function createDatabaseIfNotExists() {
     }
 }
 
-const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: "postgres"
-});
+async function initializeDb() {
+    await createDatabaseIfNotExists();
+    await db.sequelize.sync({ force: false });
+    await initializeDatabase(db.sequelize, db.Sequelize, db);
+    logger.info('Database initialization completed');
+}
 
-const db = {};
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
-
-// Initialize database and models
-createDatabaseIfNotExists()
-    .then(() => {
-        return db.sequelize.sync({ force: false });
-    })
-    .then(async () => {
-        await initializeDatabase(sequelize, DataTypes, db);
-        logger.info('Database -> Yes resync done');
-    })
-    .catch((err) => {
-        logger.error('Database -> error', err);
-    });
-
-module.exports = db;
+module.exports = { db, initializeDb };

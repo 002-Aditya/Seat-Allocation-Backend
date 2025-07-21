@@ -1,6 +1,6 @@
 exports.getDropDown = async (req, res, next) => {
     try {
-        const db = await require("../utils/db-init");
+        const db = await require("../utils/database/db-init");
         const input = req.body;
         const inputParams = JSON.stringify(input);
         const query = "SELECT lov.get_lov(:inputParams)";

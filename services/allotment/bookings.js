@@ -1,7 +1,7 @@
-const db = require("../../utils/db-init");
+const db = require("../../utils/database/db-init").db;
 const logger = require("../../utils/logger");
 const { filterData } = require('../../utils/filter-data');
-const getModel = require("../../utils/getModel");
+const getModel = require("../../utils/database/getModel");
 
 const BookingService = {
 
