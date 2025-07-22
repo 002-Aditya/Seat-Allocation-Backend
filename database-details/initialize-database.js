@@ -8,7 +8,7 @@ const notificationSchema = require('./create-tables/notifications');
 const auditSchema = require('./create-tables/audit');
 const { insertBulkData } = require('./bulk-data-insertion/insert-bulk-data');
 const { createFunctions } = require("./createFunctions");
-const { createExtensions } = require("./createExntensions");
+const { createExtensions } = require("./createExtensions");
 const createAuditTriggers = require("./triggers/createAuditTriggers");
 
 const initializeDatabase = async (sequelize, DataTypes, db) => {
