@@ -15,6 +15,19 @@ const geoIp = require("geoip-lite");
 }
 * */
 const geoLocation = (ip) => {
+    if (ip === '::1' || ip === '127.0.0.1') {
+        return {
+            range: [0, 0],
+            country: 'LOCAL',
+            region: 'LOCAL',
+            city: 'Localhost',
+            timezone: 'Etc/UTC',
+            ll: [0, 0],
+            metro: 0,
+            area: 0,
+            isLocalhost: true
+        };
+    }
     return geoIp.lookup(ip);
 }
 
