@@ -1,5 +1,5 @@
 const GenerateOtpService = require('../services/notifications/otp-details');
-const { generateToken } = require('../utils/generate-jwt-token');
+const { generateToken } = require('../utils/generateUniqueFields/generate-jwt-token');
 const logger = require("../utils/logger");
 
 const generateOtp = async (req, res) => {

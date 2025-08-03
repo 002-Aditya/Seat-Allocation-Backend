@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const UserMasterService = require('../services/auth/user-master');
 const logger = require('../utils/logger');
-const { generateToken } = require('../utils/generate-jwt-token');
+const { generateToken } = require('../utils/generateUniqueFields/generate-jwt-token');
 
 async function login(req, res) {
     try {

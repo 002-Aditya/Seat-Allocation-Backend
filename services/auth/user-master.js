@@ -3,7 +3,7 @@ const logger = require('../../utils/logger');
 const { filterData } = require('../../utils/filter-data');
 const getModel = require('../../utils/database/getModel');
 const bcrypt = require('bcrypt');
-const generateEmpCode = require("../../utils/get-e-code");
+const generateEmpCode = require("../../utils/generateUniqueFields/get-e-code");
 const setCurrentUserId = require("../../utils/database/db-config-variable");
 
 const UserMasterService = {
