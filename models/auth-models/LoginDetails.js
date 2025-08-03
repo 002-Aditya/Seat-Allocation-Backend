@@ -8,9 +8,16 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true,
             unique: true,
         },
-        location: {
-            type: DataTypes.TEXT,
-            allowNull: false
+        locationId: {
+            type: Sequelize.UUID,
+            allowNull: false,
+            references: {
+                model: {
+                    tableName: 'user_geolocation_details',
+                    schema: 'auth',
+                },
+                key: 'geo_location_id',
+            }
         },
         ipAddress: {
             type: DataTypes.INET,
@@ -21,9 +28,16 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             defaultValue: Sequelize.NOW
         },
-        device: {
-            type: DataTypes.TEXT,
-            allowNull: false
+        deviceDetailsId: {
+            type: Sequelize.UUID,
+            allowNull: false,
+            references: {
+                model: {
+                    tableName: 'user_geolocation_details',
+                    schema: 'auth',
+                },
+                key: 'device_details_id',
+            }
         },
         userId: {
             type: DataTypes.UUID,
