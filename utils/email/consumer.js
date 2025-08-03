@@ -57,7 +57,7 @@ setTimeout(() => {
             await db.sequelize.authenticate();
             await initializeDatabase(db.sequelize, DataTypes, db);
             logger.info('Consumer DB models initialized');
-            consumeQueue();
+            await consumeQueue();
         } catch (err) {
             logger.error('Failed to initialize DB models in consumer:', err);
             process.exit(1);
