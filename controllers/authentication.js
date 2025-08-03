@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const UserMasterService = require('../services/auth/user-master');
 const logger = require('../utils/logger');
 const { generateToken } = require('../utils/generateUniqueFields/generate-jwt-token');
+const SecurityMasterService = require('../services/auth/security-master');
 
 async function login(req, res) {
     try {
@@ -35,6 +36,9 @@ async function login(req, res) {
 
         const token = generateToken({ userId: user.message.userId });
         logger.info(`User with userId ${user.message.userId} logged in successfully`);
+
+        // Saving user login details in their respective tables
+        SecurityMasterService.saveLoginDetails(req, user.message.userId);
 
         return res.status(200).send({
             token: token,
