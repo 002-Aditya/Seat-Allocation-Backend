@@ -33,7 +33,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             references: {
                 model: {
-                    tableName: 'user_geolocation_details',
+                    tableName: 'user_device_details',
                     schema: 'auth',
                 },
                 key: 'device_details_id',

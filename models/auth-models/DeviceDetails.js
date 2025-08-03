@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes} = require('sequelize');
 
 module.exports = (sequelize, Sequelize) => {
-    const DeviceDetails = sequelize.define('user_geolocation_details', {
+    const DeviceDetails = sequelize.define('user_device_details', {
         deviceDetailsId: {
             type: Sequelize.UUID,
             defaultValue: Sequelize.UUIDV1,
@@ -55,7 +55,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     {
         schema: 'auth',
-        tableName: 'user_geolocation_details',
+        tableName: 'user_device_details',
         timestamps: false,
         comment: 'This table will store user device details like all the places where user has logged in from and its related information.',
         underscored: true,
