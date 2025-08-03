@@ -36,7 +36,7 @@ initializeDb()
     });
 
 app.get('/', (req, res) => {
-    logger.info("Service is expected to run");
+    logger.info("Service is running...");
     res.send('Hello, Seat Allocation Service this side!');
 });
 const server = app.listen(port);
