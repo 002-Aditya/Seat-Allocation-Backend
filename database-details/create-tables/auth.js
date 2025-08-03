@@ -5,7 +5,7 @@ const initialize = async (sequelize, DataTypes) => {
     const LoginDetails = require('../../models/auth-models/LoginDetails')(sequelize, DataTypes);
 
     await UserMaster.sync({ force: false });
-    await GeolocationDetails.sync({ force: true });
+    await GeolocationDetails.sync({ force: false });
     await DeviceDetails.sync({ force: false });
     await LoginDetails.sync({ force: false });
 

@@ -20,7 +20,7 @@ async function createUser(req, res) {
         };
 
         // Send email job to RabbitMQ
-        sendEmailToQueue(emailData);
+        await sendEmailToQueue(emailData);
         return res.status(201).send(createdUser.message);
     } catch (e) {
         logger.error(`Error while creating user : `, e);
