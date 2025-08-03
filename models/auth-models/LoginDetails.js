@@ -21,6 +21,10 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             defaultValue: Sequelize.NOW
         },
+        device: {
+            type: DataTypes.TEXT,
+            allowNull: false
+        },
         userId: {
             type: DataTypes.UUID,
             allowNull: false,
