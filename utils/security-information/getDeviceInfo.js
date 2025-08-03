@@ -1,9 +1,9 @@
 const UAParser = require("ua-parser-js");
+const logger = require("../logger");
 
 const getDeviceInfo = async (req) => {
     try {
         const ua = req.headers['user-agent'];
-        console.log("User Agent: " + ua);
         const parser = new UAParser(ua);
         const result = parser.getResult()
 
@@ -18,6 +18,7 @@ const getDeviceInfo = async (req) => {
         };
         return { success: true, message: deviceInfo };
     } catch (e) {
+        logger.error("Error occurred while getting device information", e);
         return { success: false, message: e.message };
     }
 }
