@@ -4,10 +4,10 @@ const initialize = async (sequelize, DataTypes) => {
     const DeviceDetails = require('../../models/auth-models/DeviceDetails')(sequelize, DataTypes);
     const LoginDetails = require('../../models/auth-models/LoginDetails')(sequelize, DataTypes);
 
-    await UserMaster.sync({ force: true });
-    await GeolocationDetails.sync({ force: true });
-    await DeviceDetails.sync({ force: true });
-    await LoginDetails.sync({ force: true });
+    await UserMaster.sync({ force: false });
+    await GeolocationDetails.sync({ force: false });
+    await DeviceDetails.sync({ force: false });
+    await LoginDetails.sync({ force: false });
 
     return {
         user_master: UserMaster,
