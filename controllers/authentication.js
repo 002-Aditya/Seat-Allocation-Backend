@@ -38,7 +38,7 @@ async function login(req, res) {
         logger.info(`User with userId ${user.message.userId} logged in successfully`);
 
         // Saving user login details in their respective tables
-        SecurityMasterService.saveLoginDetails(req, user.message.userId);
+        await SecurityMasterService.saveLoginDetails(req, user.message.userId);
 
         return res.status(200).send({
             token: token,

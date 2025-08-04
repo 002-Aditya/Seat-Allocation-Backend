@@ -28,7 +28,9 @@ const geoLocation = (ip) => {
             isLocalhost: true
         };
     }
-    return geoIp.lookup(ip);
+    const geoLocationDetails = geoIp.lookup(ip);
+    geoLocationDetails.isLocalhost = false;
+    return geoLocationDetails;
 }
 
 module.exports = geoLocation;

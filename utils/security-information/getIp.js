@@ -1,4 +1,4 @@
-const getIp = (req) => {
+const getIp = async (req) => {
     return req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 }
 
