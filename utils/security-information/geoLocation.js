@@ -14,7 +14,7 @@ const geoIp = require("geoip-lite");
    area: 5
 }
 * */
-const geoLocation = (ip) => {
+const geoLocation = async (ip) => {
     if (ip === '::1' || ip === '127.0.0.1') {
         return {
             range: [0, 0],

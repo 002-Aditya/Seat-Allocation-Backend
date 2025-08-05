@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         range: {
             type: DataTypes.ARRAY(DataTypes.INTEGER),
-            allowNull: false
+            allowNull: true
         },
         country: {
             type: DataTypes.STRING(20),
@@ -34,7 +34,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         area: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: true
         },
         userId: {
             type: DataTypes.UUID,

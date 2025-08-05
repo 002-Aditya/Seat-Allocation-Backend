@@ -78,26 +78,34 @@ const SecurityMasterService = {
     async saveGeoLocationDetails(ip, userId, transaction, GeoLocationDetails) {
         try {
             const geoLocationData = await geoLocation(ip);
-            geoLocationData.latitudeLongitude = {
-                type: 'Point',
-                coordinates: [
-                    geoLocationData.ll?.[1] || 0,
-                    geoLocationData.ll?.[0] || 0
-                ]
+            const latitude = geoLocationData.ll?.[0] || 0;
+            const longitude = geoLocationData.ll?.[1] || 0;
+            const cleanData = {
+                country: geoLocationData.country,
+                region: geoLocationData.region,
+                city: geoLocationData.city,
+                timezone: geoLocationData.timezone,
+                latitudeLongitude: {
+                    type: 'Point',
+                    coordinates: [longitude, latitude]
+                },
+                userId
             };
-            geoLocationData.userId = userId;
-            delete geoLocationData.ll;
-
-            const inserted = await GeoLocationDetails.create(geoLocationData, {
+            const inserted = await GeoLocationDetails.create(cleanData, {
                 transaction,
-                raw: true,
+                raw: true
             });
-
-            return { success: true, message: inserted.get({ plain: true }) };
+            return {
+                success: true,
+                message: inserted.get({ plain: true })
+            };
         } catch (e) {
             await transaction.rollback();
-            logger.error(`Error saving geo location: `, e);
-            return { success: false, message: e.message };
+            logger.error("Error saving geo location:", e);
+            return {
+                success: false,
+                message: e.message
+            };
         }
     },
 
