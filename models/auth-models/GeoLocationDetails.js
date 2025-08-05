@@ -47,11 +47,6 @@ module.exports = (sequelize, Sequelize) => {
                 key: 'user_id',
             }
         },
-        isLocalHost: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-            defaultValue: true,
-        },
         createdOn: {
             type: DataTypes.DATE,
             defaultValue: Sequelize.NOW,

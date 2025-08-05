@@ -24,13 +24,10 @@ const geoLocation = async (ip) => {
             timezone: 'Etc/UTC',
             ll: [0, 0],
             metro: 0,
-            area: 0,
-            isLocalhost: true
+            area: 0
         };
     }
-    const geoLocationDetails = geoIp.lookup(ip);
-    geoLocationDetails.isLocalhost = false;
-    return geoLocationDetails;
+    return geoIp.lookup(ip);
 }
 
 module.exports = geoLocation;
