@@ -1,6 +1,6 @@
 const logger = require('../utils/logger');
 
-const handleMethodRoutings = (req, res, details) => {
+const handleMethodRouting = (req, res, details) => {
     const { type } = req.query;
     const controller = details[type];
     if (controller) {
@@ -11,4 +11,4 @@ const handleMethodRoutings = (req, res, details) => {
     }
 };
 
-module.exports = handleMethodRoutings;
+module.exports = handleMethodRouting;

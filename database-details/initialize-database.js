@@ -20,14 +20,16 @@ const initializeDatabase = async (sequelize, DataTypes, db) => {
         await createExtensions(db);
 
         // Create tables from here
-        db.lov = await lovSchema.initialize(sequelize, DataTypes);
         db.auth = await authSchema.initialize(sequelize, DataTypes);
         db.config = await configSchema.initialize(sequelize, DataTypes);
         db.allotment = await allotmentSchema.initialize(sequelize, DataTypes);
         db.notifications = await notificationSchema.initialize(sequelize, DataTypes);
         db.audit = await auditSchema.initialize(sequelize, DataTypes);
-        await insertBulkData(db);
-        await createFunctions(db);
+        if (process.env.DATABASE_REFRESH) {
+            db.lov = await lovSchema.initialize(sequelize, DataTypes);
+            await insertBulkData(db);
+            await createFunctions(db);
+        }
         await createAuditTriggers(db);
         logger.info('Database schemas and models initialized successfully');
     } catch (err) {
